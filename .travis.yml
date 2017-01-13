@@ -1,16 +1,16 @@
 language: python
 cache:
-  directories:
-    - "$HOME/google-cloud-sdk/"
+    directories:
+        - "$HOME/google-cloud-sdk/"
 
 env:
-  global:
-    - GAE_PYTHONPATH=${HOME}/.cache/google_appengine
-    - PATH=$PATH:${HOME}/google-cloud-sdk/bin
-    - PYTHONPATH=${PYTHONPATH}:${GAE_PYTHONPATH}
-  matrix:
-    - RUN_TESTS=true
-    - RUN_PYLINT=true
+    global:
+        - GAE_PYTHONPATH=${HOME}/.cache/google_appengine
+        - PATH=$PATH:${HOME}/google-cloud-sdk/bin
+        - PYTHONPATH=${PYTHONPATH}:${GAE_PYTHONPATH}
+    matrix:
+        - RUN_TESTS=true
+        - RUN_PYLINT=true
 
 install:
     - "./ci/install.sh"
