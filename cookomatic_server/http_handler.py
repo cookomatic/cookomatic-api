@@ -14,6 +14,12 @@ def ping():
     return 'pong'
 
 
+@APP.route('/hello')
+def hello():
+    """Sample web handler to see if the server is alive."""
+    return 'World!'
+
+
 @APP.errorhandler(404)
 def page_not_found(error):
     """Return a custom 404 error."""
