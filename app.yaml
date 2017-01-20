@@ -1,7 +1,7 @@
 runtime: python27
 api_version: 1
 threadsafe: yes
-service: server
+service: api
 
 handlers:
 - url: /admin/.*
@@ -9,7 +9,7 @@ handlers:
   login: admin
 
 - url: .*
-  script: cookomatic_server.http_handler.APP
+  script: cookomatic_api.http_handler.APP
   secure: always
 
 libraries:

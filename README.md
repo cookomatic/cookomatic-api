@@ -1,1 +1,1 @@
-# cookomatic-server
+# cookomatic-api
