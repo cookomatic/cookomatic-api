@@ -1,7 +1,5 @@
-"""`appengine_config` gets loaded when starting a new application instance."""
-import os.path
-import sys
+"""Gets loaded when starting a new application instance"""
+from google.appengine.ext import vendor
 
-# add `lib` subdirectory to `sys.path`, so our `main` module can load
-# third-party libraries.
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'lib'))
+# Add any libraries installed in the `lib` folder.
+vendor.add('lib')
