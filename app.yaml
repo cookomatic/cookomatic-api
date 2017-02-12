@@ -9,7 +9,7 @@ handlers:
   login: admin
 
 - url: .*
-  script: cookomatic_api.http_handler.APP
+  script: cookomatic_api.api.app
   secure: always
 
 libraries:
