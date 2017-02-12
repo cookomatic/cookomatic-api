@@ -9,6 +9,9 @@ if [ ! -d ${HOME}/google-cloud-sdk/bin ]; then
     curl https://sdk.cloud.google.com | bash;
 fi
 
+# Install gcloud components
+gcloud -q components install app-engine-python
+
 echo -e "\n## Authenticating to Google Cloud Platform"
 # Decrypt the credentials we added to the repo using the key we added with the Travis command line tool
 openssl aes-256-cbc -K $encrypted_a4e9be6daf7a_key -iv $encrypted_a4e9be6daf7a_iv -in ./ci/client-secret.json.enc -out ./ci/client-secret.json -d

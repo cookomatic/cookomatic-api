@@ -21,3 +21,8 @@ script:
 
 after_success:
     - "./ci/deploy.sh"
+
+addons:
+  apt:
+    packages:
+    - realpath
