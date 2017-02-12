@@ -1,6 +1,10 @@
 import unittest
+import sys
 
 from cookomatic_api import api
+
+sys.path.insert(1, 'google-cloud-sdk/platform/google_appengine')
+sys.path.insert(1, 'google-cloud-sdk/platform/google_appengine/lib/yaml/lib')
 
 
 class TestDish(unittest.TestCase):
