@@ -1,14 +1,11 @@
 import unittest
-import sys
 
+from flask_testing import TestCase
 from google.appengine.ext import ndb
 from google.appengine.ext import testbed
 
 from cookomatic_api import api
 from cookomatic_api.db.dish import Dish
-
-sys.path.insert(1, 'google-cloud-sdk/platform/google_appengine')
-sys.path.insert(1, 'google-cloud-sdk/platform/google_appengine/lib/yaml/lib')
 
 
 class TestDish(unittest.TestCase):
@@ -40,6 +37,17 @@ class TestDish(unittest.TestCase):
             api.save_dish()
 
             self.assertEqual(1, len(Dish.query().fetch(2)))
+
+
+class TestHttpHandler(TestCase):
+    def create_app(self):
+        app = api.app
+        app.config['TESTING'] = True
+        return app
+
+    def test_404(self):
+        response = self.client.get('/asdf')
+        self.assert404(response)
 
 
 if __name__ == '__main__':
