@@ -1,3 +1,4 @@
+import json
 import unittest
 
 from flask_testing import TestCase
@@ -8,10 +9,8 @@ from cookomatic_api import api
 from cookomatic_api.db.dish import Dish
 
 
-class TestDish(unittest.TestCase):
+class TestDish(TestCase):
     def setUp(self):
-        self.app = api.app.test_client()
-
         # Set up Cloud Datastore testbed
         self.testbed = testbed.Testbed()
         self.testbed.activate()
@@ -22,21 +21,25 @@ class TestDish(unittest.TestCase):
     def tearDown(self):
         self.testbed.deactivate()
 
+    def create_app(self):
+        app = api.app
+        app.config['TESTING'] = True
+        return app
+
     def test_get_dish(self):
         dish_id = Dish(name='Pizza').put().id()
-        expected = '{"dish.name": "Pizza"}'
+        expected = {'dish.name': 'Pizza'}
 
-        response = api.get_dish(dish_id)
+        response = self.client.get('/v1/dish/%s' % dish_id, content_type='application/json')
 
-        self.assertEqual(response, expected)
+        self.assertEqual(expected, response.json)
 
     def test_save_dish(self):
-        data = {'name': 'pizza'}
+        data = json.dumps({'name': 'pizza'})
 
-        with api.app.test_request_context('/dish', method='POST', data=data):
-            api.save_dish()
+        self.client.post('/v1/dish', data=data, content_type='application/json')
 
-            self.assertEqual(1, len(Dish.query().fetch(2)))
+        self.assertEqual(1, len(Dish.query().fetch(2)))
 
 
 class TestHttpHandler(TestCase):
@@ -47,6 +50,7 @@ class TestHttpHandler(TestCase):
 
     def test_404(self):
         response = self.client.get('/asdf')
+
         self.assert404(response)
 
 
