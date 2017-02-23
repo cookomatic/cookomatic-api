@@ -23,35 +23,22 @@ class TestDish(TestCase):
 
     def create_app(self):
         app = api.app
-        app.config['TESTING'] = True
         return app
 
     def test_get_dish(self):
-        dish_id = Dish(name='Pizza').put().id()
-        expected = {'dish.name': 'Pizza'}
+        dish_id = Dish(name='Dish 1').put().id()
+        expected = {'name': 'Dish 1', 'steps': []}
 
         response = self.client.get('/v1/dish/%s' % dish_id, content_type='application/json')
 
         self.assertEqual(expected, response.json)
 
     def test_save_dish(self):
-        data = json.dumps({'name': 'pizza'})
+        data = json.dumps({'name': 'Dish 1'})
 
         self.client.post('/v1/dish', data=data, content_type='application/json')
 
         self.assertEqual(1, len(Dish.query().fetch(2)))
-
-
-class TestHttpHandler(TestCase):
-    def create_app(self):
-        app = api.app
-        app.config['TESTING'] = True
-        return app
-
-    def test_404(self):
-        response = self.client.get('/asdf')
-
-        self.assert404(response)
 
 
 if __name__ == '__main__':
