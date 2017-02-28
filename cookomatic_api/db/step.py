@@ -17,7 +17,8 @@ def get_step(step_id):
 @db_step.route('/v1/step', methods=['POST'])
 def save_step():
     """API method to save a step."""
-    return util.generic_save(Step, 'step')
+    data = flask.request.get_json()
+    return util.generic_save(Step, 'step', data)
 
 
 class Step(ndb.Model):

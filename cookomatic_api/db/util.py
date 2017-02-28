@@ -9,8 +9,7 @@ def generic_get(model, obj_id):
     return flask.jsonify(obj.to_dict())
 
 
-def generic_save(model, name):
+def generic_save(model, name, data):
     """Generic API helper method to save an object."""
-    data = flask.request.get_json()
     key = model(**data).put()
     return flask.jsonify({'%s_id' % name: key.id()})

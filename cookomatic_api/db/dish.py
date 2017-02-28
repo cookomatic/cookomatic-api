@@ -17,7 +17,8 @@ def get_dish(dish_id):
 @db_dish.route('/v1/dish', methods=['POST'])
 def save_dish():
     """API method to save a dish."""
-    return util.generic_save(Dish, 'dish')
+    data = flask.request.get_json()
+    return util.generic_save(Dish, 'dish', data)
 
 
 class Dish(ndb.Model):

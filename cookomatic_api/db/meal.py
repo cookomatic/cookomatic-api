@@ -17,7 +17,8 @@ def get_meal(meal_id):
 @db_meal.route('/v1/meal', methods=['POST'])
 def save_meal():
     """API method to save a meal."""
-    return util.generic_save(Meal, 'meal')
+    data = flask.request.get_json()
+    return util.generic_save(Meal, 'meal', data)
 
 
 class Meal(ndb.Model):
