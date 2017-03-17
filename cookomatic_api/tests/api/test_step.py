@@ -9,7 +9,7 @@ from cookomatic_api import api
 from cookomatic_api.db.step import Step
 
 STEP_PARAMS = {
-    'name': 'Step 1',
+    'number': '1',
     'description': 'This is Step 1',
     'estimated_time': 5,
     'dish_id': 12345,
