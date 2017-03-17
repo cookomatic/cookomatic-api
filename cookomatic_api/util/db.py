@@ -17,7 +17,7 @@ def generic_get(model, obj_id, convert_keys=None):
     return flask.jsonify(data)
 
 
-def generic_save(model, name, convert_keys=None):
+def generic_save(model, name, convert_keys=None, extra_calls=None):
     """Generic API helper method to save an object."""
     data = flask.request.get_json()
 
@@ -27,5 +27,9 @@ def generic_save(model, name, convert_keys=None):
             data[key] = [convert_model.get_by_id(item_id).key for item_id in data[key]]
 
     # Save data and return new ID
-    key = model(**data).put()
+    entity = model(**data)
+    if extra_calls:
+        for call_name in extra_calls:
+            getattr(entity, call_name)()
+    key = entity.put()
     return flask.jsonify({'%s_id' % name: key.id()})

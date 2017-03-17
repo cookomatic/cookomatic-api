@@ -1,7 +1,7 @@
 """Handles the HTTP routing."""
 
 from flask import Flask
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 
 from cookomatic_api.api.login import api_login
 from cookomatic_api.api.scheduling import api_schedule

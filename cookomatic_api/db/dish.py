@@ -10,6 +10,7 @@ from cookomatic_api.db.step import Step
 
 GS_BUCKET = '/gs/project-cookomatic.appspot.com'
 SEARCH_INDEX = 'dish'
+THUMB_SIZE = 256
 
 db_dish = flask.Blueprint('db_dish', __name__)
 
@@ -23,7 +24,8 @@ def get_dish(dish_id):
 @db_dish.route('/v1/dish', methods=['POST'])
 def save_dish():
     """API method to save a dish."""
-    return util.db.generic_save(Dish, 'dish', convert_keys={'steps': Step})
+    return util.db.generic_save(Dish, 'dish', convert_keys={'steps': Step},
+                                extra_calls=['generate_img_url'])
 
 
 @db_dish.route('/v1/dish/search')
@@ -47,13 +49,13 @@ class Dish(ndb.Model):
     total_time = ndb.IntegerProperty()
     serving_size = ndb.IntegerProperty()
 
-    def __init__(self, *args, **kwargs):
-        super(Dish, self).__init__(*args, **kwargs)
-
+    def generate_img_url(self):
+        """Generates img urls for self.img and self.img_thumb based on self.img_filename."""
         # Transform image filename into serving_url
-        blob_key = blobstore.create_gs_key("%s/%s" % (GS_BUCKET, self.img_filename))
-        self.img = images.get_serving_url(blob_key)
-        self.img_thumb = images.get_serving_url(blob_key, size=32)
+        if not self.img or not self.img_thumb:
+            blob_key = blobstore.create_gs_key("%s/%s" % (GS_BUCKET, self.img_filename))
+            self.img = images.get_serving_url(blob_key)
+            self.img_thumb = images.get_serving_url(blob_key, size=THUMB_SIZE)
 
     @classmethod
     def _post_put_hook(cls, future):

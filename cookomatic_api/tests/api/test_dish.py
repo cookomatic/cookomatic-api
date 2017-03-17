@@ -49,7 +49,9 @@ class TestDish(TestCase):
         return app
 
     def test_get_dish(self):
-        dish_id = Dish(**self.sample_dish).put().id()
+        dish = Dish(**self.sample_dish)
+        dish.generate_img_url()
+        dish_id = dish.put().id()
         expected = self.sample_dish
         expected['steps'] = [key.id() for key in expected['steps']]
 
