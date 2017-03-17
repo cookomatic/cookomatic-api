@@ -12,7 +12,6 @@ STEP_PARAMS = {
     'name': 'Step 1',
     'description': 'This is Step 1',
     'estimated_time': 5,
-    'dish_id': 12345,
     'ingredients': ['Ingredient 1', 'Ingredient 2']
 }
 

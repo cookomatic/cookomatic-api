@@ -18,7 +18,8 @@ db_dish = flask.Blueprint('db_dish', __name__)
 @db_dish.route('/v1/dish/<int:dish_id>')
 def get_dish(dish_id):
     """API method to get a dish by ID."""
-    return util.db.generic_get(Dish, dish_id, convert_keys=['steps'])
+    dish = util.db.generic_get(Dish, dish_id, convert_keys={'steps': Step})
+    return flask.jsonify(dish)
 
 
 @db_dish.route('/v1/dish', methods=['POST'])
@@ -83,5 +84,5 @@ class Dish(ndb.Model):
         query_obj = util.search.create_search_query(query_str)
         results = index.search(query=query_obj)
 
-        entities = util.search.results_to_entities(cls, results)
-        return flask.jsonify([entity.to_dict() for entity in entities])
+        entities = util.search.results_to_entities(cls, results, convert_keys={'steps': Step})
+        return flask.jsonify(entities)

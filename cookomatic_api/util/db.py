@@ -10,11 +10,11 @@ def generic_get(model, obj_id, convert_keys=None):
 
     # Convert KeyProperty to ID if necessary
     if convert_keys:
-        for key in convert_keys:
-            data[key] = [a_key.id() for a_key in data[key]]
+        for key, convert_model in convert_keys.items():
+            data[key] = [generic_get(convert_model, a_key.id()) for a_key in data[key]]
 
     # Send data
-    return flask.jsonify(data)
+    return data
 
 
 def generic_save(model, name, convert_keys=None, extra_calls=None):

@@ -33,7 +33,6 @@ class TestDish(TestCase):
                 Step(name=u'step 1',
                      description=u'baste',
                      estimated_time=5,
-                     dish_id=0,
                      ingredients=['tomatoes']).put()
             ],
             u'total_time': 35,
@@ -53,7 +52,7 @@ class TestDish(TestCase):
         dish.generate_img_url()
         dish_id = dish.put().id()
         expected = self.sample_dish
-        expected['steps'] = [key.id() for key in expected['steps']]
+        expected['steps'] = [key.get().to_dict() for key in expected['steps']]
 
         response = self.client.get('/v1/dish/%s' % dish_id, content_type='application/json')
         r_json = response.json

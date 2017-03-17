@@ -1,6 +1,7 @@
 """Search utilities."""
 
 from google.appengine.api import search
+from cookomatic_api.util import db
 
 NUM_SEARCH_RESULTS = 50
 
@@ -49,7 +50,7 @@ def tokenize_string(name, string):
     return fields
 
 
-def results_to_entities(model, results):
+def results_to_entities(model, results, convert_keys=None):
     """
     Converts search results to their corresponding entities.
 
@@ -60,7 +61,7 @@ def results_to_entities(model, results):
     entities = []
     for result in results:
         entity_id = long(result.fields[0].value)
-        entity = model.get_by_id(entity_id)
+        entity = db.generic_get(model, entity_id, convert_keys=convert_keys)
         entities.append(entity)
 
     return entities

@@ -11,7 +11,8 @@ db_step = flask.Blueprint('db_step', __name__)
 @db_step.route('/v1/step/<int:step_id>')
 def get_step(step_id):
     """API method to get a step by ID."""
-    return db.generic_get(Step, step_id)
+    step = db.generic_get(Step, step_id)
+    return flask.jsonify(step)
 
 
 @db_step.route('/v1/step', methods=['POST'])
@@ -26,9 +27,4 @@ class Step(ndb.Model):
     description = ndb.StringProperty(required=True)
     estimated_time = ndb.IntegerProperty(required=True)
     snooze_time = ndb.IntegerProperty(default=0)
-
-    # These elements should be of KeyProperty type once we implement schedule
-    # dish_id = ndb.KeyProperty(required=True)
-    dish_id = ndb.IntegerProperty(required=True)
-    # ingredients = ndb.KeyProperty(repeated=True)
     ingredients = ndb.StringProperty(repeated=True)

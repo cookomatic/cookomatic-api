@@ -11,7 +11,8 @@ db_meal = flask.Blueprint('db_meal', __name__)
 @db_meal.route('/v1/meal/<int:meal_id>')
 def get_meal(meal_id):
     """API method to get a meal by ID."""
-    return db.generic_get(Meal, meal_id)
+    meal = db.generic_get(Meal, meal_id)
+    return flask.jsonify(meal)
 
 
 @db_meal.route('/v1/meal', methods=['POST'])
