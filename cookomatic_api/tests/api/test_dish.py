@@ -24,7 +24,7 @@ class TestDish(TestCase):
 
         self.sample_dish = {
             u'name': u'Dish 1',
-            u'img': u'https://example.com/img.jpg',
+            u'img_filename': u'img.jpg',
             u'tags': [u'indian', u'side dish'],
             u'tools': [u'strainer', u'starfish'],
             u'ingredients': [u'tomatoes', u'fish'],
@@ -52,12 +52,17 @@ class TestDish(TestCase):
         dish_id = Dish(**self.sample_dish).put().id()
         expected = self.sample_dish
         expected['steps'] = [key.id() for key in expected['steps']]
-        expected['img'] = '/_ah/img/encoded_gs_file:cHJvamVjdC1jb29rb21hdGljLmFwcHNwb3QuY29tL' \
-                          '2h0dHBzOi8vZXhhbXBsZS5jb20vaW1nLmpwZw=='
 
         response = self.client.get('/v1/dish/%s' % dish_id, content_type='application/json')
+        r_json = response.json
 
-        self.assertEqual(expected, response.json)
+        # Check img URLs and delete them from comparison
+        self.assertEqual('/_ah/img/', r_json['img'][:9])
+        self.assertEqual('/_ah/img/', r_json['img_thumb'][:9])
+        r_json.pop('img')
+        r_json.pop('img_thumb')
+
+        self.assertEqual(expected, r_json)
 
     def test_save_dish(self):
         self.sample_dish['steps'] = [key.id() for key in self.sample_dish['steps']]

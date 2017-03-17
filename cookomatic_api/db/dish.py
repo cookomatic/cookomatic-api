@@ -8,6 +8,7 @@ from google.appengine.ext import ndb
 from cookomatic_api import util
 from cookomatic_api.db.step import Step
 
+GS_BUCKET = '/gs/project-cookomatic.appspot.com'
 SEARCH_INDEX = 'dish'
 
 db_dish = flask.Blueprint('db_dish', __name__)
@@ -35,7 +36,9 @@ def search_dish():
 class Dish(ndb.Model):
     """Models a collection of steps that form a single dish."""
     name = ndb.StringProperty(required=True)
+    img_filename = ndb.StringProperty()
     img = ndb.StringProperty()
+    img_thumb = ndb.StringProperty()
     tags = ndb.StringProperty(repeated=True)
     tools = ndb.StringProperty(repeated=True)
     ingredients = ndb.StringProperty(repeated=True)
@@ -48,8 +51,9 @@ class Dish(ndb.Model):
         super(Dish, self).__init__(*args, **kwargs)
 
         # Transform image filename into serving_url
-        blob_key = blobstore.create_gs_key("/gs/project-cookomatic.appspot.com/%s" % self.img)
+        blob_key = blobstore.create_gs_key("%s/%s" % (GS_BUCKET, self.img_filename))
         self.img = images.get_serving_url(blob_key)
+        self.img_thumb = images.get_serving_url(blob_key, size=32)
 
     @classmethod
     def _post_put_hook(cls, future):
