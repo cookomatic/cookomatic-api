@@ -13,7 +13,7 @@ STEP_PARAMS = {
     'description': 'This is Step 1',
     'estimated_time': 5,
     'dish_id': 12345,
-    'ingredients': [456, 789]
+    'ingredients': ['Ingredient 1', 'Ingredient 2']
 }
 
 

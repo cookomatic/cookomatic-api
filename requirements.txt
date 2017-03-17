@@ -6,8 +6,10 @@
 # Note: The `lib` directory is added to `sys.path` by `appengine_config.py`.
 coverage
 Flask
+flask-cors
 flask-testing
 mock
 nose
 nose-exclude
+pillow
 pylint

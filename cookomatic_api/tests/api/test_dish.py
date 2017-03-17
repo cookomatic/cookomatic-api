@@ -16,11 +16,15 @@ class TestDish(TestCase):
         self.testbed = testbed.Testbed()
         self.testbed.activate()
         self.testbed.init_datastore_v3_stub()
+        self.testbed.init_search_stub()
+        self.testbed.init_blobstore_stub()
+        self.testbed.init_images_stub()
         self.testbed.init_memcache_stub()
         ndb.get_context().clear_cache()
 
         self.sample_dish = {
             u'name': u'Dish 1',
+            u'img': u'https://example.com/img.jpg',
             u'tags': [u'indian', u'side dish'],
             u'tools': [u'strainer', u'starfish'],
             u'ingredients': [u'tomatoes', u'fish'],
@@ -30,7 +34,7 @@ class TestDish(TestCase):
                      description=u'baste',
                      estimated_time=5,
                      dish_id=0,
-                     ingredients=[0]).put()
+                     ingredients=['tomatoes']).put()
             ],
             u'total_time': 35,
             u'serving_size': 6
@@ -41,12 +45,15 @@ class TestDish(TestCase):
 
     def create_app(self):
         app = api.app
+        app.config['PRESERVE_CONTEXT_ON_EXCEPTION'] = False
         return app
 
     def test_get_dish(self):
         dish_id = Dish(**self.sample_dish).put().id()
         expected = self.sample_dish
         expected['steps'] = [key.id() for key in expected['steps']]
+        expected['img'] = '/_ah/img/encoded_gs_file:cHJvamVjdC1jb29rb21hdGljLmFwcHNwb3QuY29tL' \
+                          '2h0dHBzOi8vZXhhbXBsZS5jb20vaW1nLmpwZw=='
 
         response = self.client.get('/v1/dish/%s' % dish_id, content_type='application/json')
 

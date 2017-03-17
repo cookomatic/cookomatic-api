@@ -13,6 +13,11 @@ def generate_mock_schedule(meal_id):
     """Generates a mock schedule until we build out the actual algorithm."""
     return {
         'meal_id': meal_id,
+        'estimated_time': 20,
+        'ingredients': [
+            'Ingredient 1',
+            'Ingredient 2'
+        ],
         'steps': [
             Step(name='Marinate Chicken',
                  description='Place chicken and seasonings into a gallon sized bag.',
@@ -27,7 +32,8 @@ def generate_mock_schedule(meal_id):
                  estimated_time=1,
                  dish_id=random.randrange(0, 999999)).to_dict(),
             Step(name='Heat Nonstick Skillet',
-                 description='Place a large nonstick skillet over medium high heat and wait until warm.',
+                 description='Place a large nonstick skillet over medium high heat and wait until'
+                             'warm.',
                  estimated_time=1,
                  dish_id=random.randrange(0, 999999)).to_dict(),
             Step(name='Season Carrots',
@@ -45,14 +51,14 @@ def generate_mock_schedule(meal_id):
                  ingredients=[
                      'Chicken'
                  ]).to_dict(),
-             Step(name='Flip Chicken',
+            Step(name='Flip Chicken',
                  description='Flip the chicken and cook for an additional 30 seconds',
                  estimated_time=1,
                  dish_id=random.randrange(0, 999999),
                  ingredients=[
                      'Chicken'
                  ]).to_dict(),
-             Step(name='Remove Chicken From Skillet',
+            Step(name='Remove Chicken From Skillet',
                  description='Remove browned chicken from the pan .',
                  estimated_time=1,
                  dish_id=random.randrange(0, 999999),
@@ -60,7 +66,8 @@ def generate_mock_schedule(meal_id):
                      'Chicken'
                  ]).to_dict(),
             Step(name='Add Pineapple and Rice',
-                 description='Add pineapple and rice to skillet, cover and reduce to medium low, and cook for 45 seconds.',
+                 description='Add pineapple and rice to skillet, cover and reduce to medium low, '
+                             'and cook for 45 seconds.',
                  estimated_time=1,
                  dish_id=random.randrange(0, 999999),
                  ingredients=[
@@ -68,14 +75,16 @@ def generate_mock_schedule(meal_id):
                      'Rice'
                  ]).to_dict(),
             Step(name='Bake Carrots',
-                 description='Place the carrots on a baking tray and put in oven. Cook for 1 minute.',
+                 description='Place the carrots on a baking tray and put in oven. Cook for 1 '
+                             'minute.',
                  estimated_time=1,
                  dish_id=random.randrange(0, 999999),
                  ingredients=[
                      'Carrots'
                  ]).to_dict(),
             Step(name='Add Chicken to Skillet',
-                 description='Stir rice and nestle chicken on top and cook for an additional minute.',
+                 description='Stir rice and nestle chicken on top and cook for an additional '
+                             'minute.',
                  estimated_time=1,
                  dish_id=random.randrange(0, 999999),
                  ingredients=[

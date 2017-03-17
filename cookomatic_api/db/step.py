@@ -3,7 +3,7 @@
 import flask
 from google.appengine.ext import ndb
 
-from cookomatic_api.db import util
+from cookomatic_api.util import db
 
 db_step = flask.Blueprint('db_step', __name__)
 
@@ -11,13 +11,13 @@ db_step = flask.Blueprint('db_step', __name__)
 @db_step.route('/v1/step/<int:step_id>')
 def get_step(step_id):
     """API method to get a step by ID."""
-    return util.generic_get(Step, step_id)
+    return db.generic_get(Step, step_id)
 
 
 @db_step.route('/v1/step', methods=['POST'])
 def save_step():
     """API method to save a step."""
-    return util.generic_save(Step, 'step')
+    return db.generic_save(Step, 'step')
 
 
 class Step(ndb.Model):
@@ -31,4 +31,4 @@ class Step(ndb.Model):
     # dish_id = ndb.KeyProperty(required=True)
     dish_id = ndb.IntegerProperty(required=True)
     # ingredients = ndb.KeyProperty(repeated=True)
-    ingredients = ndb.IntegerProperty(repeated=True)
+    ingredients = ndb.StringProperty(repeated=True)
