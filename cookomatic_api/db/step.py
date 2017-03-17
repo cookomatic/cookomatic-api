@@ -22,7 +22,7 @@ def save_step():
 
 class Step(ndb.Model):
     """Models a unit of instruction for cooking a Dish."""
-    number = ndb.IntegerProperty(required=True)
+    name = ndb.StringProperty(required=True)
     description = ndb.StringProperty(required=True)
     estimated_time = ndb.IntegerProperty(required=True)
     snooze_time = ndb.IntegerProperty(default=0)
