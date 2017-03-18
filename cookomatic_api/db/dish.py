@@ -55,8 +55,8 @@ class Dish(ndb.Model):
         # Transform image filename into serving_url
         if not self.img or not self.img_thumb:
             blob_key = blobstore.create_gs_key("%s/%s" % (GS_BUCKET, self.img_filename))
-            self.img = images.get_serving_url(blob_key)
-            self.img_thumb = images.get_serving_url(blob_key, size=THUMB_SIZE)
+            self.img = images.get_serving_url(blob_key, secure_url=True)
+            self.img_thumb = images.get_serving_url(blob_key, secure_url=True, size=THUMB_SIZE)
 
     @classmethod
     def _post_put_hook(cls, future):
