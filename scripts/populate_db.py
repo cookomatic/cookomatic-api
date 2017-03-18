@@ -13,8 +13,8 @@ d_chick_steps = [
          ]),
 
     Step(name='Heat Nonstick Skillet',
-         description='Place a large nonstick skillet over medium high heat and wait until'
-                     'warm.',
+         description='Place a large skillet over medium high heat and wait until'
+                     ' warm.',
          estimated_time=1),
 
     Step(name='Add Chicken to Skillet',
@@ -30,7 +30,7 @@ d_chick_steps = [
              'Chicken'
          ]),
     Step(name='Remove Chicken From Skillet',
-         description='Remove browned chicken from the pan .',
+         description='Remove browned chicken from the pan.',
          estimated_time=1,
          ingredients=[
              'Chicken'
