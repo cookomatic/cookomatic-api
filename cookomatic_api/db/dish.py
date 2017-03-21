@@ -1,16 +1,15 @@
 """Contains a database model for a Dish."""
 
+import json
+
 import flask
-from google.appengine.api import images
-from google.appengine.ext import blobstore
+from google.appengine.api import search
 from google.appengine.ext import ndb
 
 from cookomatic_api import util
 from cookomatic_api.db.step import Step
 
-GS_BUCKET = '/gs/project-cookomatic.appspot.com'
 SEARCH_INDEX = 'dish'
-THUMB_SIZE = 256
 
 db_dish = flask.Blueprint('db_dish', __name__)
 
@@ -54,9 +53,7 @@ class Dish(ndb.Model):
         """Generates img urls for self.img and self.img_thumb based on self.img_filename."""
         # Transform image filename into serving_url
         if not self.img or not self.img_thumb:
-            blob_key = blobstore.create_gs_key("%s/%s" % (GS_BUCKET, self.img_filename))
-            self.img = images.get_serving_url(blob_key, secure_url=True)
-            self.img_thumb = images.get_serving_url(blob_key, secure_url=True, size=THUMB_SIZE)
+            self.img, self.img_thumb = util.images.generate_image_url(self.img_filename)
 
     @classmethod
     def _post_put_hook(cls, future):
@@ -65,7 +62,12 @@ class Dish(ndb.Model):
 
         # Creating the new index
         index = util.search.create_index(SEARCH_INDEX)
-        doc = util.search.create_document(entity, {'name': entity.name})
+        doc = util.search.create_document(
+            entity,
+            attributes=['name', 'img', 'img_thumb'],
+            indexed_attributes={
+                'name': search.TextField
+            })
         index.put(doc)
 
     @classmethod
@@ -84,5 +86,5 @@ class Dish(ndb.Model):
         query_obj = util.search.create_search_query(query_str)
         results = index.search(query=query_obj)
 
-        entities = util.search.results_to_entities(cls, results, convert_keys={'steps': Step})
-        return flask.jsonify(entities)
+        serialized_results = [json.loads(result.fields[0].value) for result in results]
+        return flask.jsonify(serialized_results)
