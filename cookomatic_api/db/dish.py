@@ -10,22 +10,22 @@ from cookomatic_api import util
 from cookomatic_api.db.step import Step
 
 SEARCH_INDEX = 'dish'
-
 db_dish = flask.Blueprint('db_dish', __name__)
 
 
 @db_dish.route('/v1/dish/<int:dish_id>')
 def get_dish(dish_id):
     """API method to get a dish by ID."""
-    dish = util.db.generic_get(Dish, dish_id, convert_keys={'steps': Step})
+    dish = util.db.generic_get(Dish, dish_id, convert_props={'steps': Step})
     return flask.jsonify(dish)
 
 
 @db_dish.route('/v1/dish', methods=['POST'])
 def save_dish():
     """API method to save a dish."""
-    return util.db.generic_save(Dish, 'dish', convert_keys={'steps': Step},
-                                extra_calls=['generate_img_url'])
+    data = flask.request.get_json()
+    data = util.db.ids_to_entities(data, {'steps': Step})
+    return util.db.generic_save(Dish, 'dish', data=data, extra_calls=['generate_img_url'])
 
 
 @db_dish.route('/v1/dish/search')
@@ -35,25 +35,90 @@ def search_dish():
     return Dish.search(query_str)
 
 
-class Dish(ndb.Model):
+class Dish(ndb.Expando):
     """Models a collection of steps that form a single dish."""
     name = ndb.StringProperty(required=True)
+
+    # Image filename as stored on Google Cloud Storage
     img_filename = ndb.StringProperty()
+
+    # Full-sized image URL
     img = ndb.StringProperty()
+
+    # Thumbnail image URL
     img_thumb = ndb.StringProperty()
+
+    # Tags for this dish (is searchable)
     tags = ndb.StringProperty(repeated=True)
+
+    # Tools required to complete this dish (pots, pans, etc.)
     tools = ndb.StringProperty(repeated=True)
-    ingredients = ndb.StringProperty(repeated=True)
+
+    # Things that the user needs to do before starting cooking
     prep_list = ndb.StringProperty(repeated=True)
+
+    # List of Step keys
     steps = ndb.KeyProperty(repeated=True)
-    total_time = ndb.IntegerProperty()
+
+    # How many people this dish feeds
     serving_size = ndb.IntegerProperty()
 
+    @property
+    def ingredients(self):
+        """Return a sorted list of ingredients used in this dish."""
+        ingredient_list = []
+        for step_key in self.steps:
+            step = step_key.get()
+            ingredient_list += step.ingredients
+
+        # Remove duplicates and sort
+        return sorted(set(ingredient_list))
+
     def generate_img_url(self):
-        """Generates img urls for self.img and self.img_thumb based on self.img_filename."""
+        """
+        Generates img urls for self.img and self.img_thumb based on self.img_filename.
+        :return: None
+        """
         # Transform image filename into serving_url
         if not self.img or not self.img_thumb:
             self.img, self.img_thumb = util.images.generate_image_url(self.img_filename)
+
+    def parse_step_deps(self):
+        """
+        Converts tmp_depends_on to depends_on and tmp_steps to steps. Also puts each step in DB and
+        saves keys to self.depends_on.
+
+        :return: None
+        """
+        self.steps = []
+        for step in self.tmp_steps:
+            try:
+                # Convert each dep from list index to key
+                step.depends_on = []
+                for dep_idx in step.tmp_depends_on:
+                    step.depends_on.append(self.steps[dep_idx])
+
+            except AttributeError:
+                pass
+
+            # Remove tmp property
+            util.db.remove_property(self, 'tmp_depends_on')
+
+            # Put Step in DB and save key in self.steps
+            self.steps.append(step.put())
+
+        # Remove tmp property
+        util.db.remove_property(self, 'tmp_steps')
+
+    @classmethod
+    def search(cls, query_str):
+        """Performs full-text search on entity index."""
+        index = util.search.create_index(SEARCH_INDEX)
+        query_obj = util.search.create_search_query(query_str)
+        results = index.search(query=query_obj)
+
+        serialized_results = [json.loads(result.fields[0].value) for result in results]
+        return flask.jsonify(serialized_results)
 
     @classmethod
     def _post_put_hook(cls, future):
@@ -78,13 +143,3 @@ class Dish(ndb.Model):
         # Delete search index
         index = util.search.create_index(SEARCH_INDEX)
         index.delete(str(entity.key.id()))
-
-    @classmethod
-    def search(cls, query_str):
-        """Performs full-text search on entity index."""
-        index = util.search.create_index(SEARCH_INDEX)
-        query_obj = util.search.create_search_query(query_str)
-        results = index.search(query=query_obj)
-
-        serialized_results = [json.loads(result.fields[0].value) for result in results]
-        return flask.jsonify(serialized_results)

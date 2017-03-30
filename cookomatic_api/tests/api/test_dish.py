@@ -7,6 +7,7 @@ from google.appengine.ext import testbed
 
 from cookomatic_api import api
 from cookomatic_api.db.dish import Dish
+from cookomatic_api.db.ingredient import Ingredient
 from cookomatic_api.db.step import Step
 
 
@@ -27,13 +28,12 @@ class TestDish(TestCase):
             u'img_filename': u'img.jpg',
             u'tags': [u'indian', u'side dish'],
             u'tools': [u'strainer', u'starfish'],
-            u'ingredients': [u'tomatoes', u'fish'],
             u'prep_list': [u'wash vegetables'],
             u'steps': [
                 Step(name=u'step 1',
                      description=u'baste',
                      estimated_time=5,
-                     ingredients=['tomatoes']).put()
+                     ingredients=[Ingredient(name='tomatoes')]).put()
             ],
             u'total_time': 35,
             u'serving_size': 6

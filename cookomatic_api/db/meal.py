@@ -24,4 +24,6 @@ def save_meal():
 class Meal(ndb.Model):
     """Models a collection of dishes that forms a meal."""
     name = ndb.StringProperty(required=True)
+
+    # List of Dish keys
     dishes = ndb.KeyProperty(repeated=True)

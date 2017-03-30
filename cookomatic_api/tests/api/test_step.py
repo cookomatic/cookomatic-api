@@ -6,13 +6,20 @@ from google.appengine.ext import ndb
 from google.appengine.ext import testbed
 
 from cookomatic_api import api
+from cookomatic_api.db.ingredient import Ingredient
 from cookomatic_api.db.step import Step
 
 STEP_PARAMS = {
     'name': 'Step 1',
     'description': 'This is Step 1',
+    'is_user_intensive': True,
     'estimated_time': 5,
-    'ingredients': ['Ingredient 1', 'Ingredient 2']
+    'start_time': 2,
+    'ingredients': [
+        Ingredient(name='Ingredient 1').to_dict(),
+        Ingredient(name='Ingredient 2').to_dict()
+    ],
+    'depends_on': []
 }
 
 
