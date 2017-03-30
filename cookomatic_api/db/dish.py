@@ -16,15 +16,19 @@ db_dish = flask.Blueprint('db_dish', __name__)
 @db_dish.route('/v1/dish/<int:dish_id>')
 def get_dish(dish_id):
     """API method to get a dish by ID."""
-    dish = util.db.generic_get(Dish, dish_id, convert_props={'steps': Step})
-    return flask.jsonify(dish)
+    obj = Dish.get_by_id(dish_id)
+    return flask.jsonify(obj.serialize())
 
 
 @db_dish.route('/v1/dish', methods=['POST'])
 def save_dish():
     """API method to save a dish."""
     data = flask.request.get_json()
-    data = util.db.ids_to_entities(data, {'steps': Step})
+    # This may not work exactly how we want it to. Waiting until we implement an app function
+    # to create a dish and see what requirements we have.
+
+    data = util.db.id_to_key(data, props={'steps': Step})
+
     return util.db.generic_save(Dish, 'dish', data=data, extra_calls=['generate_img_url'])
 
 
@@ -64,12 +68,23 @@ class Dish(ndb.Expando):
     serving_size = ndb.IntegerProperty()
 
     @property
+    def estimated_time(self):
+        """Return an estimate for how much time this dish takes."""
+        estimated_time = 0
+        for step_key in self.steps:
+            step = step_key.get()
+            estimated_time += step.estimated_time
+
+        return estimated_time
+
+    @property
     def ingredients(self):
         """Return a sorted list of ingredients used in this dish."""
         ingredient_list = []
         for step_key in self.steps:
             step = step_key.get()
-            ingredient_list += step.ingredients
+            for ingredient in step.ingredients:
+                ingredient_list.append(ingredient.pretty)
 
         # Remove duplicates and sort
         return sorted(set(ingredient_list))
@@ -143,3 +158,15 @@ class Dish(ndb.Expando):
         # Delete search index
         index = util.search.create_index(SEARCH_INDEX)
         index.delete(str(entity.key.id()))
+
+    def serialize(self):
+        """Serializes entity."""
+        data = self.to_dict()
+
+        # Serialize properties
+        data = util.db.key_to_entity(data, {'steps': None})
+        data = util.db.entity_to_dict(data, {'steps': None})
+        data['estimated_time'] = self.estimated_time
+        data['ingredients'] = self.ingredients
+
+        return data

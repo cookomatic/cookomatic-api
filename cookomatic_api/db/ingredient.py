@@ -12,3 +12,9 @@ class Ingredient(ndb.Model):
 
     # Unit of measurement: cups, mL, L, g, oz, etc.
     unit = ndb.StringProperty()
+
+    @property
+    def pretty(self):
+        """Prints the ingredient as plain text."""
+        string = "%s %s %s" % (self.amount, self.unit, self.name)
+        return string.replace("None", "").strip()

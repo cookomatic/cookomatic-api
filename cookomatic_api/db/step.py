@@ -13,11 +13,7 @@ db_step = flask.Blueprint('db_step', __name__)
 def get_step(step_id):
     """API method to get a step by ID."""
     obj = Step.get_by_id(step_id)
-
-    # Serialize all Ingredient objects
-    obj.ingredients = [ingred.to_dict() for ingred in obj.ingredients]
-
-    return flask.jsonify(obj.to_dict())
+    return flask.jsonify(obj.serialize())
 
 
 @db_step.route('/v1/step', methods=['POST'])
@@ -25,9 +21,11 @@ def save_step():
     """API method to save a step."""
     data = flask.request.get_json()
 
-    # Deserialize all Ingredient objects
-    ingredients = [Ingredient(**i) for i in data['ingredients']]
-    data['ingredients'] = ingredients
+    # This may not work exactly how we want it to. Waiting until we implement an app function
+    # to create a dish and see what requirements we have.
+
+    # Deserialize properties
+    data = util.db.dict_to_entity(data, {'ingredients': Ingredient})
 
     return util.db.generic_save(Step, 'step', data=data)
 
@@ -54,3 +52,12 @@ class Step(ndb.Expando):
 
     # List of keys of other Steps that this depends on. Dish.parse_step_deps creates this.
     depends_on = ndb.KeyProperty(repeated=True)
+
+    def serialize(self):
+        """Serializes entity."""
+        data = self.to_dict()
+
+        # Serialize properties
+        data = util.db.key_to_id(data, {'depends_on': None})
+
+        return data

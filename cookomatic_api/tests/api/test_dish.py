@@ -24,19 +24,19 @@ class TestDish(TestCase):
         ndb.get_context().clear_cache()
 
         self.sample_dish = {
-            u'name': u'Dish 1',
-            u'img_filename': u'img.jpg',
-            u'tags': [u'indian', u'side dish'],
-            u'tools': [u'strainer', u'starfish'],
-            u'prep_list': [u'wash vegetables'],
-            u'steps': [
-                Step(name=u'step 1',
-                     description=u'baste',
+            'name': 'Dish 1',
+            'img_filename': 'img.jpg',
+            'tags': ['indian', 'side dish'],
+            'tools': ['strainer', 'starfish'],
+            'prep_list': ['wash vegetables'],
+            'steps': [
+                Step(name='step 1',
+                     description='baste',
                      estimated_time=5,
                      ingredients=[Ingredient(name='tomatoes')]).put()
             ],
-            u'total_time': 35,
-            u'serving_size': 6
+            'total_time': 35,
+            'serving_size': 6
         }
 
     def tearDown(self):
@@ -52,7 +52,9 @@ class TestDish(TestCase):
         dish.generate_img_url()
         dish_id = dish.put().id()
         expected = self.sample_dish
-        expected['steps'] = [key.get().to_dict() for key in expected['steps']]
+        expected['steps'] = [key.get().serialize() for key in expected['steps']]
+        expected['ingredients'] = ['tomatoes']
+        expected['estimated_time'] = 5
 
         response = self.client.get('/v1/dish/%s' % dish_id, content_type='application/json')
         r_json = response.json

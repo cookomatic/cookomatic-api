@@ -11,8 +11,8 @@ db_meal = flask.Blueprint('db_meal', __name__)
 @db_meal.route('/v1/meal/<int:meal_id>')
 def get_meal(meal_id):
     """API method to get a meal by ID."""
-    meal = db.generic_get(Meal, meal_id)
-    return flask.jsonify(meal)
+    obj = Meal.get_by_id(meal_id)
+    return flask.jsonify(obj.serialize())
 
 
 @db_meal.route('/v1/meal', methods=['POST'])
@@ -27,3 +27,7 @@ class Meal(ndb.Model):
 
     # List of Dish keys
     dishes = ndb.KeyProperty(repeated=True)
+
+    def serialize(self):
+        """Serializes entity."""
+        return self.to_dict()

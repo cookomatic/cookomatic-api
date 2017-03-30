@@ -1,46 +1,83 @@
 """General utilities for APIs."""
 
 import flask
+from google.appengine.ext import ndb
 
 
-def ids_to_entities(data, props):
+def id_to_key(data, props):
     """
-    Takes a list of database IDs and gets the corresponding entities in-place.
+    Converts datastore IDs (integers) to Keys in-place.
 
     :param data: data to be converted. Usually output from flask.request.get_json.
     :param props: key-value list of property_name: entity_type. For example, {'steps': Step}
-    :return: Entire data value with fields changed
+    :return: data with fields changed
     """
-    for prop, model in props.items():
-        data[prop] = [model.get_by_id(item_id).key for item_id in data[prop]]
 
-    return data
+    def func(item_id, model):
+        """Performs operation."""
+        return ndb.Key(model, item_id)
+
+    return _property_converter(data, props, func)
 
 
-def keys_to_ids(data, props):
+def key_to_id(data, props):
     """
-    Takes a list of database KeyProperty's and gets the corresponding IDs in-place.
-
-    :param data: data to be converted.
-    :param props: key-value list of property_name: entity_type. For example, {'steps': Step}
-    :return: Entire entity with fields changed.
+    Converts datastore keys to IDs in-place.
+    See id_to_key signature for details.
     """
-    for key, model in props.items():
-        data[key] = [generic_get(model, a_key.id()) for a_key in data[key]]
 
-    return data
+    def func(item_key, _):
+        """Performs operation."""
+        return item_key.id()
+
+    return _property_converter(data, props, func)
 
 
-def generic_get(model, obj_id, convert_props=None):
-    """Generic API helper method to get an object by ID."""
-    obj = model.get_by_id(obj_id)
-    data = obj.to_dict()
+def key_to_entity(data, props):
+    """
+    Converts datastore keys to entities in-place.
+    See id_to_key signature for details.
+    """
 
-    # Convert KeyProperty to ID if necessary
-    if convert_props:
-        data = keys_to_ids(data, convert_props)
+    def func(item_key, _):
+        """Performs operation."""
+        return item_key.get()
 
-    # Send data
+    return _property_converter(data, props, func)
+
+
+def entity_to_dict(data, props):
+    """
+    Converts entities to their dict representations in-place.
+    See id_to_key signature for details.
+    """
+
+    def func(entity, _):
+        """Performs operation."""
+        return entity.serialize()
+
+    return _property_converter(data, props, func)
+
+
+def dict_to_entity(data, props):
+    """
+    Converts dicts to entities in-place.
+    See id_to_key signature for details.
+    """
+
+    def func(item, model):
+        """Performs operation."""
+        return model(**item)
+
+    return _property_converter(data, props, func)
+
+
+def _property_converter(data, props, func):
+    """Generic property converter to help the *_to_* functions above."""
+    for key, val in props.items():
+        if key in data:
+            data[key] = [func(item, val) for item in data[key]]
+
     return data
 
 
