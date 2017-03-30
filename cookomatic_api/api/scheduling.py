@@ -3,6 +3,7 @@
 import flask
 
 from cookomatic_api.db.step import Step
+from cookomatic_api.db.ingredient import Ingredient
 
 api_schedule = flask.Blueprint('api_schedule', __name__)
 
@@ -12,6 +13,7 @@ def generate_mock_schedule(meal_id):
     return {
         'meal_id': meal_id,
         'estimated_time': 20,
+
         'ingredients': [
             'Chicken',
             'Pineapple',
@@ -25,8 +27,8 @@ def generate_mock_schedule(meal_id):
                  description='Place chicken and seasonings into a gallon sized bag.',
                  estimated_time=1,
                  ingredients=[
-                     'Chicken',
-                     'Seasonings'
+                     Ingredient(name='Chicken'),
+                     Ingredient(name='Seasonings')
                  ]).to_dict(),
             Step(name='Preheat Oven',
                  description='Preheat Oven to 400 degrees',
@@ -39,49 +41,49 @@ def generate_mock_schedule(meal_id):
                  description='Add the carrots to a bowl and toss with remaining seasonings',
                  estimated_time=4,
                  ingredients=[
-                     'Carrots',
-                     'Seasonings'
+                     Ingredient(name='Carrots'),
+                     Ingredient(name='Seasonings')
                  ]).to_dict(),
             Step(name='Add Chicken to Skillet',
                  description='Add chicken to skillet and cook over medium heat for 30 seconds.',
                  estimated_time=5,
                  ingredients=[
-                     'Chicken'
+                     Ingredient(name='Chicken')
                  ]).to_dict(),
             Step(name='Flip Chicken',
                  description='Flip the chicken and cook for an additional 30 seconds',
                  estimated_time=6,
                  ingredients=[
-                     'Chicken'
+                     Ingredient(name='Chicken')
                  ]).to_dict(),
             Step(name='Remove Chicken From Skillet',
                  description='Remove browned chicken from the pan .',
                  estimated_time=7,
                  ingredients=[
-                     'Chicken'
+                     Ingredient(name='Chicken')
                  ]).to_dict(),
             Step(name='Add Pineapple and Rice',
                  description='Add pineapple and rice to skillet, cover and reduce to medium low, '
                              'and cook for 45 seconds.',
                  estimated_time=8,
                  ingredients=[
-                     'Pineapple',
-                     'Rice'
+                     Ingredient(name='Pineapple'),
+                     Ingredient(name='Rice')
                  ]).to_dict(),
             Step(name='Bake Carrots',
                  description='Place the carrots on a baking tray and put in oven. Cook for 1 '
                              'minute.',
                  estimated_time=9,
                  ingredients=[
-                     'Carrots'
+                     Ingredient(name='Carrots')
                  ]).to_dict(),
             Step(name='Add Chicken to Skillet',
                  description='Stir rice and nestle chicken on top and cook for an additional '
                              'minute.',
                  estimated_time=10,
                  ingredients=[
-                     'Chicken',
-                     'Rice'
+                     Ingredient(name='Chicken'),
+                     Ingredient(name='Rice')
                  ]).to_dict(),
         ]
     }
