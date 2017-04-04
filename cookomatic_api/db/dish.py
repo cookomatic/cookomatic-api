@@ -155,6 +155,10 @@ class Dish(ndb.Expando):
         """Action right before entity is deleted."""
         entity = key.get()
 
+        # Delete all Step objects
+        for step_key in entity.steps:
+            step_key.delete()
+
         # Delete search index
         index = util.search.create_index(SEARCH_INDEX)
         index.delete(str(entity.key.id()))
