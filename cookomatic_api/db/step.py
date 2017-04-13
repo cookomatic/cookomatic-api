@@ -33,19 +33,19 @@ def save_step():
 class Step(ndb.Expando):
     """Models a unit of instruction for cooking a Dish."""
     name = ndb.StringProperty(required=True)
-    description = ndb.StringProperty(required=True)
+    description = ndb.StringProperty()
 
     # Does this step require a user's attention for the entire duration?
     is_user_intensive = ndb.BooleanProperty(default=True)
 
     # How long this step should take the user to complete
-    estimated_time = ndb.IntegerProperty(required=True)
+    estimated_time = ndb.FloatProperty(required=True)
 
     # Used only by scheduler. What point in time this step is ready to be completed.
-    start_time = ndb.IntegerProperty()
+    start_time = ndb.FloatProperty()
 
     # Number of seconds the step be snoozed if the user isn't ready to complete it.
-    snooze_time = ndb.IntegerProperty(default=0)
+    snooze_time = ndb.FloatProperty(default=0)
 
     # List of keys of other Ingredients required by this step
     ingredients = ndb.StructuredProperty(Ingredient, repeated=True)
@@ -56,6 +56,7 @@ class Step(ndb.Expando):
     def serialize(self):
         """Serializes entity."""
         data = self.to_dict()
+        data['id'] = self.key.id()
 
         # Serialize properties
         data = util.db.key_to_id(data, {'depends_on': None})

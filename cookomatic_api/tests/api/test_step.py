@@ -41,7 +41,7 @@ class TestStep(TestCase):
 
     def test_get_step(self):
         step_id = Step(**STEP_PARAMS).put().id()
-        expected = {'snooze_time': 0}
+        expected = {'snooze_time': 0, 'id': 1}
         expected.update(STEP_PARAMS)
 
         response = self.client.get('/v1/step/%s' % step_id, content_type='application/json')

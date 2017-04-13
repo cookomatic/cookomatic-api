@@ -166,6 +166,7 @@ class Dish(ndb.Expando):
     def serialize(self):
         """Serializes entity."""
         data = self.to_dict()
+        data['id'] = self.key.id()
 
         # Serialize properties
         data = util.db.key_to_entity(data, {'steps': None})

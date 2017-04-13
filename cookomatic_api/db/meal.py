@@ -3,7 +3,7 @@
 import flask
 from google.appengine.ext import ndb
 
-from cookomatic_api.util import db
+from cookomatic_api import util
 
 db_meal = flask.Blueprint('db_meal', __name__)
 
@@ -18,7 +18,7 @@ def get_meal(meal_id):
 @db_meal.route('/v1/meal', methods=['POST'])
 def save_meal():
     """API method to save a meal."""
-    return db.generic_save(Meal, 'meal')
+    return util.db.generic_save(Meal, 'meal')
 
 
 class Meal(ndb.Model):
@@ -30,4 +30,10 @@ class Meal(ndb.Model):
 
     def serialize(self):
         """Serializes entity."""
-        return self.to_dict()
+        data = self.to_dict()
+        data['id'] = self.key.id()
+
+        # Serialize properties
+        data = util.db.key_to_id(data, {'dishes': None})
+
+        return data
