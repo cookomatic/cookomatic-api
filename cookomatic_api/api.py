@@ -3,7 +3,6 @@
 from flask import Flask
 from flask_cors import CORS, cross_origin
 
-from cookomatic_api.api.scheduling import api_schedule
 from cookomatic_api.db.cook_event import db_cook_event
 from cookomatic_api.db.dish import db_dish
 from cookomatic_api.db.meal import db_meal
@@ -14,7 +13,6 @@ CORS(app)
 app.config['DEBUG'] = True
 
 # Register API endpoints stored in other files
-app.register_blueprint(api_schedule)
 app.register_blueprint(db_cook_event)
 app.register_blueprint(db_dish)
 app.register_blueprint(db_meal)

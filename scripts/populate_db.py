@@ -1,8 +1,8 @@
 # Copy this into the App Engine interactive console
 
 from cookomatic_api.db.dish import Dish
-from cookomatic_api.db.step import Step, Ingredient
 from cookomatic_api.db.meal import Meal
+from cookomatic_api.db.step import Step, Ingredient
 
 meal = Meal(name='My awesome dish')
 
@@ -151,7 +151,6 @@ d_carrot.generate_img_url()
 d_carrot.parse_step_deps()
 meal.dishes.append(d_carrot.put())
 
-
 d_pizza = Dish(
     name='Quick and Easy Pizza',
     img_filename='carrots.jpg',
@@ -174,7 +173,8 @@ d_pizza = Dish(
     tmp_steps=[
         Step(
             name='Proof Yeast',
-            description='In a medium bowl, dissolve yeast and sugar in warm water (~110 degrees), and let stand until creamy.',
+            description='In a medium bowl, dissolve yeast and sugar in warm water (~110 degrees), '
+                        'and let stand until creamy.',
             estimated_time=10,
             is_user_intensive=False,
             ingredients=[
@@ -196,7 +196,8 @@ d_pizza = Dish(
         Step(
             name='Let the Dough Rest',
             is_user_intensive=False,
-            description='Place a dish cloth on top of the bowl, and let rest in a warm place for 20 minutes',
+            description='Place a dish cloth on top of the bowl, and let rest in a warm place '
+                        'for 20 minutes',
             estimated_time=20
         ),
         Step(
@@ -207,7 +208,8 @@ d_pizza = Dish(
         ),
         Step(
             name='Shape Dough',
-            description='Lightly flour a clean surface, and turn dough out onto it and pat or roll the dough into a circle',
+            description='Lightly flour a clean surface, and turn dough out onto it and pat or '
+                        'roll the dough into a circle',
             estimated_time=5,
             ingredients=[
                 Ingredient(name='Flour'),
@@ -215,12 +217,15 @@ d_pizza = Dish(
         ),
         Step(
             name='Grease Pizza Pan',
-            description='Lightly grease a pizza pan or baking sheet with olive oil, or dust with cornmeal.',
+            description='Lightly grease a pizza pan or baking sheet with olive oil, or dust '
+                        'with cornmeal.',
             estimated_time=1
         ),
         Step(
             name='Add Toppings',
-            description='Transfer crust to greased pizza pan, and spread with the desired amount of marinara sauce, and top with cheese and any additional desired ingredients.',
+            description='Transfer crust to greased pizza pan, and spread with the desired amount '
+                        'of marinara sauce, and top with cheese and any additional desired '
+                        'ingredients.',
             estimated_time=3,
             ingredients=[
                 Ingredient(name='Marinara Sauce, homemade or store bought', amount=6, unit='oz'),
@@ -231,7 +236,8 @@ d_pizza = Dish(
         Step(
             name='Bake',
             is_user_intensive=False,
-            description='Place in oven, and bake for 18 minutes, or until the bottom is golden brown.',
+            description='Place in oven, and bake for 18 minutes, or until the bottom is golden '
+                        'brown.',
             estimated_time=18
         ),
         Step(
@@ -249,4 +255,6 @@ d_pizza = Dish(
 d_pizza.generate_img_url()
 d_pizza.parse_step_deps()
 meal.dishes.append(d_pizza.put())
+
+meal.gen_schedule()
 meal.put()

@@ -80,14 +80,7 @@ class Dish(ndb.Expando):
     @property
     def ingredients(self):
         """Return a sorted list of ingredients used in this dish."""
-        ingredient_list = []
-        for step_key in self.steps:
-            step = step_key.get()
-            for ingredient in step.ingredients:
-                ingredient_list.append(ingredient.pretty)
-
-        # Remove duplicates and sort
-        return sorted(set(ingredient_list))
+        return util.db.get_ingredients(self.steps)
 
     def generate_img_url(self):
         """

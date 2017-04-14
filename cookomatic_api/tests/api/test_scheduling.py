@@ -184,6 +184,8 @@ class TestSchedule(TestCase):
         dish2.parse_step_deps()
         meal.dishes.append(dish2.put())
 
+        meal.gen_schedule()
+
         return meal.put().id()
 
     def tearDown(self):
@@ -196,8 +198,8 @@ class TestSchedule(TestCase):
     def test_get_schedule(self):
         meal_id = self.create_meal()
 
-        response = self.client.get('/v1/schedule/%s' % meal_id, content_type='application/json')
-        schedule = response.json
+        response = self.client.get('/v1/meal/%s' % meal_id, content_type='application/json')
+        schedule = response.json['schedule']['steps']
 
         # It isn't necessary to compare IDs, etc. (since they will be different every time),
         # so remove them from output

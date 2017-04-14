@@ -1,17 +1,14 @@
 """Generates meal schedule."""
 
-import flask
-
-from cookomatic_api.db.meal import Meal
-
-api_schedule = flask.Blueprint('api_schedule', __name__)
+from cookomatic_api import util
 
 
 class Schedule(object):
-    """Generate cooking schedule for a meal."""
-    def __init__(self, meal_id):
-        # The finished schedule we are trying to generate
-        self.schedule = []
+    """Generate cooking steps for a Meal."""
+
+    def __init__(self, meal):
+        # The finished steps we are trying to generate
+        self.steps = []
 
         # List that contains the steps for each dish
         self.steps_by_dish = []
@@ -23,12 +20,17 @@ class Schedule(object):
         self.total_steps = 0
 
         # The actual object containing the Meal
-        self.meal = Meal.get_by_id(meal_id)
+        self.meal = meal
 
         # Wait time between steps that can be completed simultaneously
         self.wait_time = 0.5
 
         self._generate()
+
+    @property
+    def ingredients(self):
+        """Return a sorted list of ingredients used in this schedule."""
+        return util.db.get_ingredients(self.steps)
 
     def _generate(self):
         """Generates the schedule."""
@@ -64,7 +66,7 @@ class Schedule(object):
 
             # Add the last step for the given dish to the schedule and remove it from that
             # steps_by_dish' step list. The order of these items will be reversed later.
-            self.schedule.append(self.steps_by_dish[dish_num].pop())
+            self.steps.append(self.steps_by_dish[dish_num].pop())
 
             # Find the index of the new last step in the steps_by_dish array
             step_num = len(self.steps_by_dish[dish_num]) - 1
@@ -75,17 +77,17 @@ class Schedule(object):
                 self.time_step[dish_num] += self.steps_by_dish[dish_num][step_num].estimated_time
 
         # Reverse schedule
-        self.schedule.reverse()
+        self.steps.reverse()
 
     def add_start_time(self):
         """Calculates start time of each step."""
         # The schedule is in order now, all that's left is to assign a start time to every step
-        for i, current_step in enumerate(self.schedule):
-            previous_step = self.schedule[i - 1]
+        for i, current_step in enumerate(self.steps):
+            previous_step = self.steps[i - 1]
 
             # If this is the first step, start at 0
             if i == 0:
-                self.schedule[i].start_time = 0
+                self.steps[i].start_time = 0
                 continue
 
             # If previous step is user intensive, wait until its done to start this step
@@ -101,7 +103,7 @@ class Schedule(object):
             # The previous step is not intensive, but this step may depend on it
             else:
                 # Find the most recent step that current_step depends on
-                for step in reversed(self.schedule[:i]):
+                for step in reversed(self.steps[:i]):
                     if step.key in current_step.depends_on:
                         previous_time = previous_step.start_time + self.wait_time
                         found_time = step.start_time + self.wait_time
@@ -112,19 +114,16 @@ class Schedule(object):
                     raise ValueError("Didn't find dependent step.")
 
             # Save back to schedule
-            self.schedule[i] = current_step
+            self.steps[i] = current_step
 
         # Calculates the total estimated time for the entire meal
         self.meal.estimated_time = \
-            self.schedule[-1].start_time + self.schedule[-1].estimated_time
+            self.steps[-1].start_time + self.steps[-1].estimated_time
 
     def serialize(self):
         """Serializes entity."""
-        return [step.serialize() for step in self.schedule]
-
-
-@api_schedule.route('/v1/schedule/<int:meal_id>')
-def get_schedule(meal_id):
-    """API method to get meal schedule."""
-    sched = Schedule(meal_id)
-    return flask.jsonify(sched.serialize())
+        return {
+            'estimated_time': self.meal.estimated_time,
+            'ingredients': self.ingredients,
+            'steps': [step.serialize() for step in self.steps]
+        }

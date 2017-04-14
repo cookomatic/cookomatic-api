@@ -4,6 +4,8 @@ import flask
 from google.appengine.ext import ndb
 
 from cookomatic_api import util
+from cookomatic_api.db.dish import Dish
+from cookomatic_api.scheduling import Schedule
 
 db_meal = flask.Blueprint('db_meal', __name__)
 
@@ -18,7 +20,12 @@ def get_meal(meal_id):
 @db_meal.route('/v1/meal', methods=['POST'])
 def save_meal():
     """API method to save a meal."""
-    return util.db.generic_save(Meal, 'meal')
+    data = flask.request.get_json()
+
+    # Convert IDs to Keys
+    data = util.db.id_to_key(data, props={'dishes': Dish})
+
+    return util.db.generic_save(Meal, 'meal', data=data, extra_calls=['gen_schedule'])
 
 
 class Meal(ndb.Model):
@@ -27,6 +34,15 @@ class Meal(ndb.Model):
 
     # List of Dish keys
     dishes = ndb.KeyProperty(repeated=True)
+
+    # Schedule generated for this meal
+    schedule = ndb.JsonProperty()
+
+    def gen_schedule(self):
+        """Generate a schedule for this meal."""
+        if self.dishes:
+            sched = Schedule(self)
+            self.schedule = sched.serialize()
 
     def serialize(self):
         """Serializes entity."""
