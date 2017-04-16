@@ -25,7 +25,7 @@ def save_meal():
     # Convert IDs to Keys
     data = util.db.id_to_key(data, props={'dishes': Dish})
 
-    return util.db.generic_save(Meal, 'meal', data=data, extra_calls=['gen_schedule'])
+    return util.db.generic_save(Meal, data=data, extra_calls=['gen_schedule'])
 
 
 class Meal(ndb.Model):

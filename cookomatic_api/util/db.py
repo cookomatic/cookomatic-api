@@ -81,7 +81,7 @@ def _property_converter(data, props, func):
     return data
 
 
-def generic_save(model, name, data=None, extra_calls=None):
+def generic_save(model, data=None, extra_calls=None):
     """Generic API helper method to save an object."""
     if not data:
         data = flask.request.get_json()
@@ -93,8 +93,8 @@ def generic_save(model, name, data=None, extra_calls=None):
         for call_name in extra_calls:
             getattr(entity, call_name)()
 
-    key = entity.put()
-    return flask.jsonify({'%s_id' % name: key.id()})
+    entity.put()
+    return flask.jsonify(entity.serialize())
 
 
 def remove_property(entity, prop):

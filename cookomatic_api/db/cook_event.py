@@ -22,7 +22,8 @@ def save_cook_event():
     """API method to save a cook event."""
     data = flask.request.get_json()
     data['time'] = datetime(**data['time'])
-    return util.db.generic_save(CookEvent, 'cook_event')
+
+    return util.db.generic_save(CookEvent)
 
 
 class CookEvent(ndb.Expando):

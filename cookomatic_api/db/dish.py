@@ -29,7 +29,7 @@ def save_dish():
 
     data = util.db.id_to_key(data, props={'steps': Step})
 
-    return util.db.generic_save(Dish, 'dish', data=data, extra_calls=['generate_img_url'])
+    return util.db.generic_save(Dish, data=data, extra_calls=['generate_img_url'])
 
 
 @db_dish.route('/v1/dish/search')

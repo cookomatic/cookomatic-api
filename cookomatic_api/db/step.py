@@ -27,7 +27,7 @@ def save_step():
     # Deserialize properties
     data = util.db.dict_to_entity(data, {'ingredients': Ingredient})
 
-    return util.db.generic_save(Step, 'step', data=data)
+    return util.db.generic_save(Step, data=data)
 
 
 class Step(ndb.Expando):
