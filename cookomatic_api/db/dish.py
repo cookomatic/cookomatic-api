@@ -14,26 +14,30 @@ db_dish = flask.Blueprint('db_dish', __name__)
 
 
 @db_dish.route('/v1/dish/<int:dish_id>')
-def get_dish(dish_id):
+@util.api.authenticate
+def get_dish(user, dish_id):
     """API method to get a dish by ID."""
     obj = Dish.get_by_id(dish_id)
     return flask.jsonify(obj.serialize())
 
 
 @db_dish.route('/v1/dish', methods=['POST'])
-def save_dish():
+@util.api.authenticate
+def save_dish(user):
     """API method to save a dish."""
     data = flask.request.get_json()
+
     # This may not work exactly how we want it to. Waiting until we implement an app function
     # to create a dish and see what requirements we have.
 
     data = util.db.id_to_key(data, props={'steps': Step})
 
-    return util.db.generic_save(Dish, data=data, extra_calls=['generate_img_url'])
+    return util.api.generic_save(Dish, data=data, extra_calls=['generate_img_url'])
 
 
 @db_dish.route('/v1/dish/search')
-def search_dish():
+@util.api.authenticate
+def search_dish(user):
     """API method to search for a dish."""
     query_str = flask.request.args.get('search')
     return Dish.search(query_str)

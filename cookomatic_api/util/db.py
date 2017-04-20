@@ -1,6 +1,5 @@
 """General utilities for APIs."""
 
-import flask
 from google.appengine.ext import ndb
 
 
@@ -79,22 +78,6 @@ def _property_converter(data, props, func):
             data[key] = [func(item, val) for item in data[key]]
 
     return data
-
-
-def generic_save(model, data=None, extra_calls=None):
-    """Generic API helper method to save an object."""
-    if not data:
-        data = flask.request.get_json()
-
-    # Save data and return new ID
-    entity = model(**data)
-
-    if extra_calls:
-        for call_name in extra_calls:
-            getattr(entity, call_name)()
-
-    entity.put()
-    return flask.jsonify(entity.serialize())
 
 
 def remove_property(entity, prop):

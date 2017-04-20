@@ -11,21 +11,23 @@ db_meal = flask.Blueprint('db_meal', __name__)
 
 
 @db_meal.route('/v1/meal/<int:meal_id>')
-def get_meal(meal_id):
+@util.api.authenticate
+def get_meal(user, meal_id):
     """API method to get a meal by ID."""
     obj = Meal.get_by_id(meal_id)
     return flask.jsonify(obj.serialize())
 
 
 @db_meal.route('/v1/meal', methods=['POST'])
-def save_meal():
+@util.api.authenticate
+def save_meal(user):
     """API method to save a meal."""
     data = flask.request.get_json()
 
     # Convert IDs to Keys
     data = util.db.id_to_key(data, props={'dishes': Dish})
 
-    return util.db.generic_save(Meal, data=data, extra_calls=['gen_schedule'])
+    return util.api.generic_save(Meal, data=data, extra_calls=['gen_schedule'])
 
 
 class Meal(ndb.Model):

@@ -11,5 +11,6 @@ flask-testing
 mock
 nose
 nose-exclude
+oauth2client
 pillow
 pylint

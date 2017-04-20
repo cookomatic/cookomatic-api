@@ -10,14 +10,16 @@ db_step = flask.Blueprint('db_step', __name__)
 
 
 @db_step.route('/v1/step/<int:step_id>')
-def get_step(step_id):
+@util.api.authenticate
+def get_step(user, step_id):
     """API method to get a step by ID."""
     obj = Step.get_by_id(step_id)
     return flask.jsonify(obj.serialize())
 
 
 @db_step.route('/v1/step', methods=['POST'])
-def save_step():
+@util.api.authenticate
+def save_step(user):
     """API method to save a step."""
     data = flask.request.get_json()
 
@@ -27,7 +29,7 @@ def save_step():
     # Deserialize properties
     data = util.db.dict_to_entity(data, {'ingredients': Ingredient})
 
-    return util.db.generic_save(Step, data=data)
+    return util.api.generic_save(Step, data=data)
 
 
 class Step(ndb.Expando):

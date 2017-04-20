@@ -11,19 +11,21 @@ db_cook_event = flask.Blueprint('db_cook_event', __name__)
 
 
 @db_cook_event.route('/v1/cook_event/<int:cook_event_id>')
-def get_cook_event(cook_event_id):
+@util.api.authenticate
+def get_cook_event(user, cook_event_id):
     """API method to get a cook event by ID."""
     obj = CookEvent.get_by_id(cook_event_id)
     return flask.jsonify(obj.serialize())
 
 
 @db_cook_event.route('/v1/cook_event', methods=['POST'])
-def save_cook_event():
+@util.api.authenticate
+def save_cook_event(user):
     """API method to save a cook event."""
     data = flask.request.get_json()
     data['time'] = datetime(**data['time'])
 
-    return util.db.generic_save(CookEvent)
+    return util.api.generic_save(CookEvent)
 
 
 class CookEvent(ndb.Expando):

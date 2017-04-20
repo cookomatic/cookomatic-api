@@ -1,7 +1,8 @@
 """Handles the HTTP routing."""
 
 from flask import Flask
-from flask_cors import CORS, cross_origin
+# noinspection PyUnresolvedReferences
+from flask_cors import CORS, cross_origin  # pylint: disable=unused-import
 
 from cookomatic_api.db.cook_event import db_cook_event
 from cookomatic_api.db.dish import db_dish
