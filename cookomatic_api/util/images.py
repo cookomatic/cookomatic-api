@@ -17,4 +17,4 @@ def generate_image_url(filename):
     """
     blob_key = blobstore.create_gs_key("%s/%s" % (GS_BUCKET, filename))
     return images.get_serving_url(blob_key, secure_url=True), \
-           images.get_serving_url(blob_key, secure_url=True, size=THUMB_SIZE)
+           images.get_serving_url(blob_key, secure_url=True, size=THUMB_SIZE, crop=True)
