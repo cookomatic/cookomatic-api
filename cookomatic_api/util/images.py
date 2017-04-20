@@ -4,6 +4,7 @@ from google.appengine.api import images
 from google.appengine.ext import blobstore
 
 GS_BUCKET = '/gs/project-cookomatic.appspot.com'
+NORMAL_SIZE = 500
 THUMB_SIZE = 256
 
 
