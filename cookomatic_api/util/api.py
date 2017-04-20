@@ -1,5 +1,6 @@
 """Provides utilities for the API functions like authentication and serialization."""
 
+import logging
 from functools import wraps
 import os
 
@@ -55,6 +56,7 @@ def authenticate(api_func):
 
             # We're authenticated, so get user data and call the real API method
             user = User.get_by_email(auth_info['email'])
+            logging.info('Logging in user with email: %s', auth_info['email'])
             return api_func(user, *args, **kwargs)
 
         except crypt.AppIdentityError:
