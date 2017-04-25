@@ -290,7 +290,7 @@ d_ratatouille = Dish(
                 Ingredient(name='Minced Garlic', amount=.25, unit='cup'),
                 Ingredient(name='Olive Oil', amount=1, unit='Tbsp'),
                 Ingredient(name='Water', amount=.75, unit='cup'),
-                Ingredient(name='Salt and Pepper to taste'),
+                Ingredient(name='Salt & Pepper'),
             ]
         ),
         Step(
@@ -316,8 +316,7 @@ d_ratatouille = Dish(
             estimated_time=1,
             ingredients=[
                 Ingredient(name='Olive Oil', amount=3, unit='Tbsp'),
-                Ingredient(name='Salt'),
-                Ingredient(name='Pepper'),
+                Ingredient(name='Salt & Pepper'),
                 Ingredient(name='Fresh Thyme', amount=1, unit='tsp'),
             ]
         ),
@@ -341,7 +340,7 @@ d_ratatouille = Dish(
             ]
         ),
     ],
-    serving_size=4
+    serving_size=6
 )
 d_ratatouille.generate_img_url()
 d_ratatouille.parse_step_deps()
@@ -459,11 +458,252 @@ d_chicken_party_tacos = Dish(
             estimated_time=1,
             tmp_depends_on=[0, 1, 2, 3, 4, 5, 6, 7, 8]
         ),
-    ]
+    ],
+    serving_size=4
 )
 d_chicken_party_tacos.generate_img_url()
 d_chicken_party_tacos.parse_step_deps()
 meal.dishes.append(d_chicken_party_tacos.put())
+
+d_carbonara = Dish(
+    name="Pasta Carbonara",
+    img_filename="Carbonara.jpg",
+    tmp_steps=[
+        Step(
+            name='Preheat Oven to 400',
+            description='Preheat oven to 400 degrees',
+            estimated_time=5,
+            is_user_intensive=False,
+        ),
+        Step(
+            name='Prepare Sheet Pan',
+            description='Line a baking sheet with tinfoil',
+            estimated_time=1,
+        ),
+        Step(
+            name='Cook Bacon',
+            description='Place bacon on lined baking sheet, and cook '
+            'until crisp. Drain on paper towels.',
+            estimated_time=13,
+            is_user_intensive=False,
+            ingredients=[
+                Ingredient(name='Bacon', amount=0.25, unit='pound'),
+            ],
+            tmp_depends_on=[0, 1]
+        ),
+        Step(
+            name='Beat Eggs and Cream',
+            description='In medium bowl beat together eggs and cream '
+            'just until blended. Stir in cheese and set aside.',
+            estimated_time=2,
+            ingredients=[
+                Ingredient(name='Eggs', amount=2),
+                Ingredient(name='Heavy Cream', amount=2, unit='Tbsp'),
+                Ingredient(name='Grated Parmesan', amount=0.5, unit='Cup'),
+            ]
+        ),
+        Step(
+            name='Boil Water for Pasta',
+            description='Place a medium pot of water over High heat until boiling',
+            estimated_time=7,
+            is_user_intensive=False,
+        ),
+        Step(
+            name='Cook Pasta',
+            estimated_time=7,
+            tmp_depends_on=[4],
+            ingredients=[
+                Ingredient(name='Dry Fettuccini Pasta', amount=0.5, unit='Pound'),
+            ],
+            is_user_intensive=False,
+        ),
+        Step(
+            name='Drain Pasta and Return to Pan',
+            description='Drain and return to pan.',
+            estimated_time=1,
+            tmp_depends_on=[4, 5],
+        ),
+        Step(
+            name='Mix with Remaining Ingredients',
+            description='Toss with butter until it is melted. '
+            'Add bacon and cheese mixture and toss gently until mixed.',
+            estimated_time=2,
+            tmp_depends_on=[4, 5, 6],
+            ingredients=[
+                Ingredient(name='Butter, softened', amount=2, unit='Tbsp'),
+                Ingredient(name='Parsley', amount=2, unit='Tbsp'),
+                Ingredient(name='Salt & Pepper'),
+            ]
+        ),
+    ],
+    serving_size=4
+)
+d_carbonara.parse_step_deps()
+meal.dishes.append(d_carbonara.put())
+d_carbonara.generate_img_url()
+
+d_red_onion_salad = Dish(
+    name="Red Onion Salad",
+    img_filename='pizza.jpg',
+    tmp_steps=[
+        Step(
+            name='Prep Ingredients',
+            description='Thinly slice red onion into rings, roughly chop the mint leaves, '
+            'and juice the lemon.',
+            ingredients=[
+                Ingredient(name='Red Onion', amount=0.5),
+                Ingredient(name='Lemon Juice', amount=0.5, unit='Lemons worth of'),
+                Ingredient(name='Roughly Chopped Mint', amount=0.5, unit='Cup'),
+            ],
+            estimated_time=3,
+        ),
+        Step(
+            name='Mix Ingredients',
+            description='In a medium bowl, mix together the ingredients until well combined.',
+            estimated_time=3,
+            ingredients=[
+                Ingredient(name='Red Onion', amount=0.5),
+                Ingredient(name='Olive Oil', amount=1, unit='Tbsp'),
+                Ingredient(name='Lemon Juice', amount=0.5, unit='Lemons worth of'),
+                Ingredient(name='Roughly Chopped Mint', amount=0.5, unit='Cup'),
+                Ingredient(name='Salt & Pepper'),
+            ],
+            tmp_depends_on=[0],
+        ),
+        Step(
+            name='Chill 1 Hour',
+            description='Cover and let rest in the fridge for at least an hour',
+            estimated_time=60,
+            is_user_intensive=False,
+            tmp_depends_on=[0, 1],
+        ),
+    ],
+    serving_size=4
+)
+d_red_onion_salad.parse_step_deps()
+meal.dishes.append(d_red_onion_salad.put())
+d_red_onion_salad.generate_img_url()
+
+d_pancakes = Dish(
+    name="Pancakes",
+    img_filename='pancakejpg',
+    tmp_steps=[
+        Step(
+            name='Heat Griddle',
+            description='Heat a griddle or frying pan over medium high heat, and '
+            'grease with 1 Tbsp of the butter',
+            estimated_time=7,
+            is_user_intensive=False,
+            ingredients=[
+                Ingredient(name='Melted Butter', amount=3, unit='Tbsp'),
+            ]
+        ),
+        Step(
+            name='Mix Ingredients',
+            description='In a large bowl, sift together the flour, baking powder, '
+            'salt and sugar. Make a well in the center and pour in the milk, egg '
+            'and the remainder of the melted butter; mix until smooth.',
+            estimated_time=5,
+            ingredients=[
+                Ingredient(name='All Purpose Flour', amount=1.5, unit='Cups'),
+                Ingredient(name='Baking Powder', amount=3.5, unit='tsp'),
+                Ingredient(name='Salt', amount=1, unit='tsp'),
+                Ingredient(name='Sugar', amount=1, unit='Tbsp'),
+                Ingredient(name='Melted Butter', amount=3, unit='Tbsp'),
+                Ingredient(name='Vanilla', amount=1, unit='tsp'),
+                Ingredient(name='Milk', amount=1.25, unit='Cups'),
+                Ingredient(name='Egg', amount=1),
+            ]
+        ),
+        Step(
+            name='Cook Pancakes',
+            description='Pour or scoop the batter onto the griddle, using approximately '
+            '1/4 cup for each pancake. Brown on both sides and serve hot.',
+            estimated_time=25,
+            tmp_depends_on=[0, 1],
+        ),
+    ],
+    serving_size=4
+)
+d_pancakes.parse_step_deps()
+meal.dishes.append(d_pancakes.put())
+d_pancakes.generate_img_url()
+
+d_sweet_potato_chips = Dish(
+    name="Sweet Potato Chips",
+    img_filename='SweetPotatoChips.jpeg',
+    tmp_steps=[
+        Step(
+            name='Preheat Oven to 250',
+            description='1.	Preheat oven to 250 degrees F (121 C).',
+            estimated_time=7,
+            is_user_intensive=False,
+        ),
+        Step(
+            name='Prep Sweet Potatos',
+            description='Rinse and dry your sweet potatoes thoroughly and slice '
+            'them as uniformly thin as possible. If you have a mandolin, use it. '
+            'Otherwise, use a very sharp knife to get these uniformly thin. Know '
+            'that chips that are too thick in parts won\'t crisp up all the way. '
+            'Still delicious, just not "chip" crispiness.',
+            estimated_time=5,
+            ingredients=[
+                Ingredient(name='Sweet Potato', amount=2),
+            ],
+        ),
+        Step(
+            name='Toss in Oil and Salt',
+            description='Toss slices in olive oil to lightly coat, then sprinkle with salt.',
+            estimated_time=2,
+            tmp_depends_on=[0, 1],
+            ingredients=[
+                Ingredient(name='Olive Oil', amount=2, unit='Tbsp'),
+                Ingredient(name='Salt'),
+            ]
+        ),
+        Step(
+            name='Arrange on Baking Sheets',
+            description='Cover two baking sheets with tinfoil, and arrage potato slices '
+            'in a single layer.',
+            estimated_time=5,
+            tmp_depends_on=[1, 2],
+        ),
+        Step(
+            name='Bake for 1 Hour',
+            description='Bake for an hour then flip the chips',
+            estimated_time=60,
+            tmp_depends_on=[0, 1, 2, 3],
+            is_user_intensive=False,
+        ),
+        Step(
+            name='Bake Another 25 Min',
+            description='Return the chips to the oven and bake for an additional 25 minutes',
+            estimated_time=25,
+            tmp_depends_on=[0, 1, 2, 3, 4],
+            is_user_intensive=False,
+        ),
+        Step(
+            name='Remove and Rest',
+            description='Remove once crisp and golden brown. Some may feel a little '
+            'tender in the middle but take them out and let them rest for 10 minutes to '
+            'crisp up.',
+            estimated_time=11,
+            tmp_depends_on=[0, 1, 2, 3, 4, 5],
+            is_user_intensive=False,
+        ),
+        Step(
+            name='Serve',
+            description='Serve Immediately',
+            estimated_time=1,
+            tmp_depends_on=[0, 1, 2, 3, 4, 5, 6],
+            is_user_intensive=False,
+        )
+    ],
+    serving_size=4
+)
+d_sweet_potato_chips.parse_step_deps()
+meal.dishes.append(d_sweet_potato_chips.put())
+d_sweet_potato_chips.generate_img_url()
 
 meal.gen_schedule()
 meal.put()
