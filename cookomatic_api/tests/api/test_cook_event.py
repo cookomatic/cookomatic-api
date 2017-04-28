@@ -8,9 +8,9 @@ from google.appengine.ext import testbed
 
 from cookomatic_api import api
 from cookomatic_api.db.cook_event import CookEvent
+from cookomatic_api.db.user import User
 
 COOK_EVENT_PARAMS = {
-    'user': 'Sally-Anne',
     'time': datetime(2012, 6, 25),
     'time_taken': [120, 260, 10],
     'rating': 3,
@@ -26,6 +26,9 @@ class TestCookEvent(TestCase):
         self.testbed.init_datastore_v3_stub()
         self.testbed.init_memcache_stub()
         ndb.get_context().clear_cache()
+
+        # Store sample user
+        COOK_EVENT_PARAMS['user'] = User(email='sally@example.com').put()
 
     def tearDown(self):
         self.testbed.deactivate()
@@ -45,8 +48,10 @@ class TestCookEvent(TestCase):
         self.assertEqual(cook_event.serialize(), r_json)
 
     def test_save_cook_event(self):
-        cook_event = CookEvent(**COOK_EVENT_PARAMS)
-        json_data = json.dumps(cook_event.serialize())
+        json_data = json.dumps({
+            'user': 'sally@example.com',
+            'time': 1493404081
+        })
 
         self.client.post('/v1/cook_event', data=json_data, content_type='application/json')
 

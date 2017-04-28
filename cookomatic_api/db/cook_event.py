@@ -6,6 +6,7 @@ import flask
 from google.appengine.ext import ndb
 
 from cookomatic_api import util
+from cookomatic_api.db.user import User
 
 db_cook_event = flask.Blueprint('db_cook_event', __name__)
 
@@ -23,16 +24,35 @@ def get_cook_event(user, cook_event_id):
 def save_cook_event(user):
     """API method to save a cook event."""
     data = flask.request.get_json()
-    data['time'] = datetime(**data['time'])
+    data['user'] = User.get_by_email(data['user']).key
+    data['time'] = datetime.fromtimestamp(data['time'])
 
     return util.api.generic_save(CookEvent)
+
+
+@db_cook_event.route('/v1/cook_event', methods=['PUT'])
+@util.api.authenticate
+def update_cook_event(user):
+    """API method to update a cook event."""
+    data = flask.request.get_json()
+
+    # Get entity that we're going to update
+    entity_id = data.pop('id')
+    entity = CookEvent.get_by_id(entity_id)
+
+    # Update entity and save
+    for key, value in data.iteritems():
+        setattr(entity, key, value)
+    entity.put()
+
+    return flask.jsonify(entity.serialize())
 
 
 class CookEvent(ndb.Expando):
     """Models the event of a meal being cooked."""
 
     # The User who cooked the meal
-    user = ndb.StringProperty(required=True)
+    user = ndb.KeyProperty(required=True)
 
     # When the meal was begun
     time = ndb.DateTimeProperty(required=True)
@@ -49,6 +69,9 @@ class CookEvent(ndb.Expando):
     def serialize(self):
         """Serializes entity."""
         data = self.to_dict()
-        data['time'] = {'year': self.time.year, 'month': self.time.month, 'day': self.time.day}
+        data['id'] = self.key.id()
+
+        data['user'] = data['user'].id()
+        data['time'] = int(data['time'].strftime("%s"))
 
         return data
