@@ -37,8 +37,8 @@ class CookEvent(ndb.Expando):
     # When the meal was begun
     time = ndb.DateTimeProperty(required=True)
 
-    # The list of seconds that correspond to the steps in the meal.schedule
-    time_taken = ndb.IntegerProperty(repeated=True)
+    # The list of minutes that correspond to the steps in the meal.schedule
+    time_taken = ndb.FloatProperty(repeated=True)
 
     # The rating given to the meal from 1-5
     rating = ndb.IntegerProperty()
