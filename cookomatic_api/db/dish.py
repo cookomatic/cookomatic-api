@@ -166,6 +166,7 @@ class Dish(ndb.Expando):
         # Serialize properties
         data = util.db.key_to_entity(data, {'steps': None})
         data = util.db.entity_to_dict(data, {'steps': None})
+        data['ingredients'] = [ingred.pretty for ingred in self.ingredients]
         data['estimated_time'] = self.estimated_time
 
         return data
