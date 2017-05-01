@@ -557,8 +557,8 @@ d_carbonara = Dish(
     serving_size=4
 )
 d_carbonara.parse_step_deps()
-meal.dishes.append(d_carbonara.put())
 d_carbonara.generate_img_url()
+meal.dishes.append(d_carbonara.put())
 
 d_red_onion_salad = Dish(
     name="Red Onion Salad",
@@ -595,12 +595,12 @@ d_red_onion_salad = Dish(
     serving_size=4
 )
 d_red_onion_salad.parse_step_deps()
-meal.dishes.append(d_red_onion_salad.put())
 d_red_onion_salad.generate_img_url()
+meal.dishes.append(d_red_onion_salad.put())
 
 d_pancakes = Dish(
     name="Pancakes",
-    img_filename='pancakejpg',
+    img_filename='pancake.jpg',
     ingredients=[
         Ingredient(name='All Purpose Flour', amount=1.5, unit='Cups'),
         Ingredient(name='Baking Powder', amount=3.5, unit='tsp'),
@@ -637,8 +637,8 @@ d_pancakes = Dish(
     serving_size=4
 )
 d_pancakes.parse_step_deps()
-meal.dishes.append(d_pancakes.put())
 d_pancakes.generate_img_url()
+meal.dishes.append(d_pancakes.put())
 
 d_sweet_potato_chips = Dish(
     name="Sweet Potato Chips",
@@ -711,8 +711,8 @@ d_sweet_potato_chips = Dish(
     serving_size=4
 )
 d_sweet_potato_chips.parse_step_deps()
-meal.dishes.append(d_sweet_potato_chips.put())
 d_sweet_potato_chips.generate_img_url()
+meal.dishes.append(d_sweet_potato_chips.put())
 
 meal.gen_schedule()
 meal.put()
