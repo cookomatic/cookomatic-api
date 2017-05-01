@@ -14,7 +14,6 @@ db_cook_event = flask.Blueprint('db_cook_event', __name__)
 
 def transform(data):
     """Perform common transforms on data."""
-    data['user'] = ndb.Key(User, data['user'])
     data['meal'] = ndb.Key(Meal, data['meal'])
     data['time'] = datetime.fromtimestamp(data['time'])
 
@@ -44,6 +43,7 @@ def save_cook_event(user):
     """API method to save a cook event."""
     data = flask.request.get_json()
     data = transform(data)
+    data['user'] = user.key
 
     return util.api.generic_save(CookEvent, data=data)
 
