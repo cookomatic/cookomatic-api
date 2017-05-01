@@ -86,19 +86,3 @@ def remove_property(entity, prop):
         delattr(entity, prop)
     except TypeError:
         pass
-
-
-def get_ingredients(steps):
-    """Return a sorted list of ingredients from a list of steps."""
-    ingredient_list = []
-    for step in steps:
-        # If step is a Key, get entity
-        if isinstance(step, ndb.Key):
-            step = step.get()
-
-        # Iterate through all ingredients
-        for ingredient in step.ingredients:
-            ingredient_list.append(ingredient.pretty)
-
-    # Remove duplicates and sort
-    return sorted(set(ingredient_list))

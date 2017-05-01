@@ -40,6 +40,17 @@ class Meal(ndb.Model):
     # Schedule generated for this meal
     schedule = ndb.JsonProperty()
 
+    @property
+    def ingredients(self):
+        """Return a sorted list of ingredients used in this schedule."""
+        ingredients = []
+        for dish_key in self.dishes:
+            dish = dish_key.get()
+            for ingredient in dish.ingredients:
+                ingredients.append(ingredient.pretty)
+
+        return sorted(set(ingredients))
+
     def gen_schedule(self):
         """Generate a schedule for this meal."""
         if self.dishes:

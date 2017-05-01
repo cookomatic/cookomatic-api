@@ -26,14 +26,16 @@ class TestDish(TestCase):
         self.sample_dish = {
             'name': 'Dish 1',
             'img_filename': 'img.jpg',
+            'ingredients': [
+                Ingredient(name='tomatoes').serialize()
+            ],
             'tags': ['indian', 'side dish'],
             'tools': ['strainer', 'starfish'],
             'prep_list': ['wash vegetables'],
             'steps': [
                 Step(name='step 1',
                      description='baste',
-                     estimated_time=5,
-                     ingredients=[Ingredient(name='tomatoes')]).put()
+                     estimated_time=5).put()
             ],
             'total_time': 35,
             'serving_size': 6
@@ -53,7 +55,6 @@ class TestDish(TestCase):
         dish_id = dish.put().id()
         expected = self.sample_dish
         expected['steps'] = [key.get().serialize() for key in expected['steps']]
-        expected['ingredients'] = ['tomatoes']
         expected['estimated_time'] = 5
         expected['id'] = 2
 

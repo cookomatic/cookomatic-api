@@ -1,7 +1,5 @@
 """Generates meal schedule."""
 
-from cookomatic_api import util
-
 
 class Schedule(object):
     """Generate cooking steps for a Meal."""
@@ -26,11 +24,6 @@ class Schedule(object):
         self.wait_time = 0.5
 
         self._generate()
-
-    @property
-    def ingredients(self):
-        """Return a sorted list of ingredients used in this schedule."""
-        return util.db.get_ingredients(self.steps)
 
     def _generate(self):
         """Generates the schedule."""
@@ -124,6 +117,6 @@ class Schedule(object):
         """Serializes entity."""
         return {
             'estimated_time': self.meal.estimated_time,
-            'ingredients': self.ingredients,
+            'ingredients': self.meal.ingredients,
             'steps': [step.serialize() for step in self.steps]
         }

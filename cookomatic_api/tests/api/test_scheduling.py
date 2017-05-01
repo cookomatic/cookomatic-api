@@ -15,7 +15,6 @@ EXPECTED = """
       {
         "description": null, 
         "estimated_time": 10.0, 
-        "ingredients": [], 
         "is_user_intensive": true, 
         "name": "Dish 2, Step 1", 
         "snooze_time": 0.0, 
@@ -24,7 +23,6 @@ EXPECTED = """
       {
         "description": null, 
         "estimated_time": 10.0, 
-        "ingredients": [], 
         "is_user_intensive": true, 
         "name": "Dish 1, Step 1", 
         "snooze_time": 0.0, 
@@ -33,7 +31,6 @@ EXPECTED = """
       {
         "description": null, 
         "estimated_time": 10.0, 
-        "ingredients": [], 
         "is_user_intensive": false, 
         "name": "Dish 2, Step 2", 
         "snooze_time": 0.0, 
@@ -42,7 +39,6 @@ EXPECTED = """
       {
         "description": null, 
         "estimated_time": 10.0, 
-        "ingredients": [], 
         "is_user_intensive": false, 
         "name": "Dish 1, Step 2", 
         "snooze_time": 0.0, 
@@ -51,7 +47,6 @@ EXPECTED = """
       {
         "description": null, 
         "estimated_time": 10.0, 
-        "ingredients": [], 
         "is_user_intensive": true, 
         "name": "Dish 2, Step 3", 
         "snooze_time": 0.0, 
@@ -60,7 +55,6 @@ EXPECTED = """
       {
         "description": null, 
         "estimated_time": 10.0, 
-        "ingredients": [], 
         "is_user_intensive": true, 
         "name": "Dish 1, Step 3", 
         "snooze_time": 0.0, 
@@ -69,7 +63,6 @@ EXPECTED = """
       {
         "description": null, 
         "estimated_time": 10.0, 
-        "ingredients": [], 
         "is_user_intensive": true, 
         "name": "Dish 2, Step 4", 
         "snooze_time": 0.0, 
@@ -78,7 +71,6 @@ EXPECTED = """
       {
         "description": null, 
         "estimated_time": 10.0, 
-        "ingredients": [], 
         "is_user_intensive": true, 
         "name": "Dish 1, Step 4", 
         "snooze_time": 0.0, 
@@ -87,7 +79,6 @@ EXPECTED = """
       {
         "description": null, 
         "estimated_time": 10.0, 
-        "ingredients": [], 
         "is_user_intensive": false, 
         "name": "Dish 2, Step 5", 
         "snooze_time": 0.0, 
@@ -96,7 +87,6 @@ EXPECTED = """
       {
         "description": null, 
         "estimated_time": 10.0, 
-        "ingredients": [], 
         "is_user_intensive": false, 
         "name": "Dish 1, Step 5", 
         "snooze_time": 0.0, 

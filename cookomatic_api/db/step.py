@@ -4,7 +4,6 @@ import flask
 from google.appengine.ext import ndb
 
 from cookomatic_api import util
-from cookomatic_api.db.ingredient import Ingredient
 
 db_step = flask.Blueprint('db_step', __name__)
 
@@ -26,9 +25,6 @@ def save_step(user):
     # This may not work exactly how we want it to. Waiting until we implement an app function
     # to create a dish and see what requirements we have.
 
-    # Deserialize properties
-    data = util.db.dict_to_entity(data, {'ingredients': Ingredient})
-
     return util.api.generic_save(Step, data=data)
 
 
@@ -48,9 +44,6 @@ class Step(ndb.Expando):
 
     # Number of seconds the step be snoozed if the user isn't ready to complete it.
     snooze_time = ndb.FloatProperty(default=0)
-
-    # List of keys of other Ingredients required by this step
-    ingredients = ndb.StructuredProperty(Ingredient, repeated=True)
 
     # List of keys of other Steps that this depends on. Dish.parse_step_deps creates this.
     depends_on = ndb.KeyProperty(repeated=True)

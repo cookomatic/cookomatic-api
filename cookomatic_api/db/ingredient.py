@@ -18,3 +18,7 @@ class Ingredient(ndb.Model):
         """Prints the ingredient as plain text."""
         string = "%s %s %s" % (self.amount, self.unit, self.name)
         return string.replace("None", "").strip()
+
+    def serialize(self):
+        """Serializes entity."""
+        return self.to_dict()

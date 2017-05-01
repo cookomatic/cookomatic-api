@@ -5,6 +5,7 @@ import json
 import flask
 from google.appengine.api import search
 from google.appengine.ext import ndb
+from cookomatic_api.db.ingredient import Ingredient
 
 from cookomatic_api import util
 from cookomatic_api.db.step import Step
@@ -27,9 +28,8 @@ def save_dish(user):
     """API method to save a dish."""
     data = flask.request.get_json()
 
-    # This may not work exactly how we want it to. Waiting until we implement an app function
-    # to create a dish and see what requirements we have.
-
+    # Deserialize properties
+    data = util.db.dict_to_entity(data, {'ingredients': Ingredient})
     data = util.db.id_to_key(data, props={'steps': Step})
 
     return util.api.generic_save(Dish, data=data, extra_calls=['generate_img_url'])
@@ -56,6 +56,9 @@ class Dish(ndb.Expando):
     # Thumbnail image URL
     img_thumb = ndb.StringProperty()
 
+    # List Ingredients required by this dish
+    ingredients = ndb.StructuredProperty(Ingredient, repeated=True)
+
     # Tags for this dish (is searchable)
     tags = ndb.StringProperty(repeated=True)
 
@@ -80,11 +83,6 @@ class Dish(ndb.Expando):
             estimated_time += step.estimated_time
 
         return estimated_time
-
-    @property
-    def ingredients(self):
-        """Return a sorted list of ingredients used in this dish."""
-        return util.db.get_ingredients(self.steps)
 
     def generate_img_url(self):
         """
@@ -169,6 +167,5 @@ class Dish(ndb.Expando):
         data = util.db.key_to_entity(data, {'steps': None})
         data = util.db.entity_to_dict(data, {'steps': None})
         data['estimated_time'] = self.estimated_time
-        data['ingredients'] = self.ingredients
 
         return data
