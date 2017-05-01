@@ -7,15 +7,17 @@ from google.appengine.ext import ndb
 
 from cookomatic_api import util
 from cookomatic_api.db.meal import Meal
-from cookomatic_api.db.user import User
 
 db_cook_event = flask.Blueprint('db_cook_event', __name__)
 
 
 def transform(data):
     """Perform common transforms on data."""
-    data['meal'] = ndb.Key(Meal, data['meal'])
-    data['time'] = datetime.fromtimestamp(data['time'])
+    if 'meal' in data:
+        data['meal'] = ndb.Key(Meal, data['meal'])
+
+    if 'time' in data:
+        data['time'] = datetime.fromtimestamp(data['time'])
 
     return data
 
