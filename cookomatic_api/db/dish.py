@@ -5,9 +5,9 @@ import json
 import flask
 from google.appengine.api import search
 from google.appengine.ext import ndb
-from cookomatic_api.db.ingredient import Ingredient
 
 from cookomatic_api import util
+from cookomatic_api.db.ingredient import Ingredient
 from cookomatic_api.db.step import Step
 
 SEARCH_INDEX = 'dish'
@@ -27,6 +27,7 @@ def get_dish(user, dish_id):
 def save_dish(user):
     """API method to save a dish."""
     data = flask.request.get_json()
+    data['owner'] = user.key
 
     # Deserialize properties
     data = util.db.dict_to_entity(data, {'ingredients': Ingredient})
@@ -46,6 +47,7 @@ def search_dish(user):
 class Dish(ndb.Expando):
     """Models a collection of steps that form a single dish."""
     name = ndb.StringProperty(required=True)
+    owner = ndb.KeyProperty()
 
     # Image filename as stored on Google Cloud Storage
     img_filename = ndb.StringProperty()
@@ -168,5 +170,6 @@ class Dish(ndb.Expando):
         data = util.db.entity_to_dict(data, {'steps': None})
         data['ingredients'] = [ingred.pretty for ingred in self.ingredients]
         data['estimated_time'] = self.estimated_time
+        data['owner'] = data['owner'].id() if data['owner'] else None
 
         return data

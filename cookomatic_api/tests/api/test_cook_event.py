@@ -8,6 +8,7 @@ from google.appengine.ext import testbed
 
 from cookomatic_api import api
 from cookomatic_api.db.cook_event import CookEvent
+from cookomatic_api.db.meal import Meal
 from cookomatic_api.db.user import User
 
 COOK_EVENT_PARAMS = {
@@ -26,6 +27,10 @@ class TestCookEvent(TestCase):
         self.testbed.init_datastore_v3_stub()
         self.testbed.init_memcache_stub()
         ndb.get_context().clear_cache()
+
+        # Store sample meal
+        meal_key = Meal(name='Meal').put()
+        COOK_EVENT_PARAMS['meal'] = meal_key
 
         # Store sample user
         COOK_EVENT_PARAMS['user'] = User(email='sally@example.com').put()
@@ -49,6 +54,7 @@ class TestCookEvent(TestCase):
 
     def test_save_cook_event(self):
         json_data = json.dumps({
+            'meal': COOK_EVENT_PARAMS['meal'].id(),
             'user': 'sally@example.com',
             'time': 1493404081
         })

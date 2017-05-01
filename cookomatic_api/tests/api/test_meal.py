@@ -27,7 +27,7 @@ class TestMeal(TestCase):
 
     def test_get_meal(self):
         meal_id = Meal(name='Meal 1').put().id()
-        expected = {'name': 'Meal 1', 'id': 1, 'dishes': [], 'schedule': None}
+        expected = {'name': 'Meal 1', 'id': 1, 'dishes': [], 'schedule': None, 'owner': None}
 
         response = self.client.get('/v1/meal/%s' % meal_id, content_type='application/json')
 

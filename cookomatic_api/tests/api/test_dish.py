@@ -57,6 +57,7 @@ class TestDish(TestCase):
         expected['steps'] = [key.get().serialize() for key in expected['steps']]
         expected['estimated_time'] = 5
         expected['id'] = 2
+        expected['owner'] = None
         expected['ingredients'] = ['tomatoes']
 
         response = self.client.get('/v1/dish/%s' % dish_id, content_type='application/json')

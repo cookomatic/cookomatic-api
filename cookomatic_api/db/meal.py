@@ -23,6 +23,7 @@ def get_meal(user, meal_id):
 def save_meal(user):
     """API method to save a meal."""
     data = flask.request.get_json()
+    data['owner'] = user.key
 
     # Convert IDs to Keys
     data = util.db.id_to_key(data, props={'dishes': Dish})
@@ -33,6 +34,7 @@ def save_meal(user):
 class Meal(ndb.Model):
     """Models a collection of dishes that forms a meal."""
     name = ndb.StringProperty(required=True)
+    owner = ndb.KeyProperty()
 
     # List of Dish keys
     dishes = ndb.KeyProperty(repeated=True)
@@ -64,5 +66,6 @@ class Meal(ndb.Model):
 
         # Serialize properties
         data = util.db.key_to_id(data, {'dishes': None})
+        data['owner'] = data['owner'].id() if data['owner'] else None
 
         return data
