@@ -1,6 +1,7 @@
 """Contains a database model for a Dish."""
 
 import json
+import random
 
 import flask
 from google.appengine.api import search
@@ -41,7 +42,15 @@ def save_dish(user):
 def search_dish(user):
     """API method to search for a dish."""
     query_str = flask.request.args.get('search')
-    return Dish.search(query_str)
+    return flask.jsonify(Dish.search(query_str))
+
+
+@db_dish.route('/v1/dish/suggested')
+@util.api.authenticate
+def suggest_dish(user):
+    """API method recommend a dish to go along with the current one."""
+    all_dishes = Dish.search('')
+    return flask.jsonify(random.sample(all_dishes, 2))
 
 
 class Dish(ndb.Expando):
@@ -130,7 +139,7 @@ class Dish(ndb.Expando):
         results = index.search(query=query_obj)
 
         serialized_results = [json.loads(result.fields[0].value) for result in results]
-        return flask.jsonify(serialized_results)
+        return serialized_results
 
     @classmethod
     def _post_put_hook(cls, future):
