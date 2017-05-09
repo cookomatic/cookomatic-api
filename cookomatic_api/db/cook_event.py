@@ -106,7 +106,7 @@ class CookEvent(ndb.Expando):
     def get_meal_rating(cls, meal_key):
         """Returns an average rating for a given Meal."""
         query = cls.query(cls.meal == meal_key)
-        ratings = [ce.rating for ce in query]
+        ratings = [ce.rating for ce in query if ce.rating]
         if not ratings:
             return 0
 
